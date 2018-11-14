@@ -6,7 +6,7 @@ package com.dili.message.sdk.domain;
  * @author ：WangBo
  * @time ：2018年11月9日下午3:49:39
  */
-public class DeliveryParam {
+public class DeliveryParam extends BaseParam{
 	/** 取货码 */
 	private String deliveryCode;
 	/** 商品详情 */

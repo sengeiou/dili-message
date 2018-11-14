@@ -1,4 +1,4 @@
-package com.dili.message.sdk;
+package com.dili.message.sdk.service;
 
 import com.dili.message.sdk.domain.CampaignFailureParam;
 import com.dili.message.sdk.domain.CampaignSuccessParam;
@@ -6,7 +6,7 @@ import com.dili.message.sdk.domain.CloseOrderParam;
 import com.dili.message.sdk.domain.DeliveryParam;
 import com.dili.message.sdk.domain.DeliverySuccessParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
-import com.dili.message.sdk.domain.RefundsParam;
+import com.dili.message.sdk.domain.RefundParam;
 
 /**
  * @description：
@@ -31,7 +31,7 @@ public interface IMessageService {
 	/**
 	 * 退款通知
 	 */
-	public boolean refunds(RefundsParam param);
+	public boolean refund(RefundParam param);
 
 
 	/**

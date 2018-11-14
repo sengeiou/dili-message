@@ -5,7 +5,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import com.dili.ss.retrofitful.annotation.RestfulScan;
 
 /**
  * 由MyBatis Generator工具自动生成
@@ -21,9 +24,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 //@EnableAutoConfiguration(exclude = {ThymeleafAutoConfiguration.class, VelocityAutoConfiguration.class})
 @MapperScan(basePackages = {"com.dili.message.dao", "com.dili.ss.dao"})
 //@ImportResource(locations = "classpath:applicationContext.xml")
-@ComponentScan(basePackages={"com.dili.ss","com.dili.message"})
+@ComponentScan(basePackages={"com.dili.ss","com.dili.message","com.dili.demo"})
+@RestfulScan("com.dili.demo")
 //@EnableEncryptableProperties
-//@PropertySource(name="EncryptedProperties", value = "classpath:security.properties")
+@PropertySource(name="MessageProperties", value = "classpath:conf/message.properties")
 //@EncryptablePropertySource(name = "EncryptedProperties", value = "classpath:security.properties")
 //@ServletComponentScan
 //@Import({DynamicRoutingDataSourceRegister.class}) // 注册动态多数据源

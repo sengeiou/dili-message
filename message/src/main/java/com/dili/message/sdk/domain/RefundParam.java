@@ -6,7 +6,7 @@ package com.dili.message.sdk.domain;
  * @author ：WangBo
  * @time ：2018年11月9日下午3:57:48
  */
-public class RefundsParam {
+public class RefundParam extends BaseParam{
 	/** 退款时间 */
 	private String time;
 	/** 退款说明 */
@@ -23,7 +23,7 @@ public class RefundsParam {
 	/**
 	 * 
 	 */
-	public RefundsParam(String time, String description, String amount, String cause, String refundsNo, String productItemInfo) {
+	public RefundParam(String time, String description, String amount, String cause, String refundsNo, String productItemInfo) {
 		this.time = time;
 		this.description = description;
 		this.amount = amount;
