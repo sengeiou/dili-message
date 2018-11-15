@@ -17,6 +17,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.dili.http.okhttp.OkHttpUtils;
 import com.dili.message.sdk.MessageService;
+import com.dili.message.sdk.common.AccessTokenUtil;
 import com.dili.message.sdk.domain.DeliveryParam;
 import com.dili.message.sdk.type.MessageType;
 

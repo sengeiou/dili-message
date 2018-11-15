@@ -1,20 +1,16 @@
-package com.dili.message.sdk.service.weapp;
+package com.dili.message.sdk.service.mp;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.annotation.AccessType;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.dili.http.okhttp.OkHttpUtils;
-import com.dili.message.sdk.common.AccessTokenUtil;
 import com.dili.message.sdk.common.TemplateParam;
 import com.dili.message.sdk.domain.CampaignFailureParam;
 import com.dili.message.sdk.domain.CampaignSuccessParam;
@@ -30,22 +26,20 @@ import com.dili.ss.util.SpringUtil;
 import okhttp3.Response;
 
 /**
- * @description： 小程序消息推送实现
+ * @description： 公众号消息推送实现发送
  * 
  * @author ：WangBo
  * @time ：2018年11月9日上午10:50:06
  */
 @Component
-public class WeappImpl implements IMessageService {
-	Logger log = LoggerFactory.getLogger(WeappImpl.class);
+public class MpImpl implements IMessageService {
+	Logger log = LoggerFactory.getLogger(MpImpl.class);
 	@Value("${weapp.appId}")
 	public String appId;
 	@Value("${weapp.appsecret}")
 	public String appsecret;
 
-	// public static String
-	// uniformMessageUrl="https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send?access_token="
-	// + accessToken;
+//	public static String uniformMessageUrl="https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send?access_token=" + accessToken;
 	/**
 	 * 支持的模板
 	 */
@@ -63,40 +57,36 @@ public class WeappImpl implements IMessageService {
 	public String template_deliverySuccess;
 	@Value("${weapp.templateid.orderPaySuccess}")
 	public String template_orderPaySuccess;
-	@Resource
-	private AccessTokenUtil accessTokenUtil;
 
 	@Override
 	public boolean delivery(DeliveryParam param) {
 		try {
 			log.info("小程序取货消息推送");
-			// // 获取 access_token
-			// HashMap<String, String> paramMap = new HashMap<String, String>();
-			// paramMap.put("appid", appId);
-			// paramMap.put("secret", appsecret);
-			// paramMap.put("grant_type", "client_credential");
-			// String tokenUrl = "https://api.weixin.qq.com/cgi-bin/token";
-			// Response execute =
-			// OkHttpUtils.get().headers(null).url(tokenUrl).params(paramMap).build()
-			// // 3小时过期
-			// .connTimeOut(1000L * 60L * 60L * 3).readTimeOut(1000L * 60L * 60L *
-			// 3).writeTimeOut(1000L * 60L * 60L * 3).execute();
-			// String tokenResponse = execute.body().string();
-			// log.info("token>" + tokenResponse);
-			// JSONObject tokenObj = JSONObject.parseObject(tokenResponse);
-			// String accessToken = tokenObj.getString("access_token");
-			String accessToken = accessTokenUtil.getToken(appId, appsecret);
+			// 获取 access_token
+			HashMap<String, String> paramMap = new HashMap<String, String>();
+			paramMap.put("appid", appId);
+			paramMap.put("secret", appsecret);
+			paramMap.put("grant_type", "client_credential");
+			String tokenUrl = "https://api.weixin.qq.com/cgi-bin/token";
+			Response execute = OkHttpUtils.get().headers(null).url(tokenUrl).params(paramMap).build()
+					// 3小时过期
+					.connTimeOut(1000L * 60L * 60L * 3).readTimeOut(1000L * 60L * 60L * 3).writeTimeOut(1000L * 60L * 60L * 3).execute();
+			String tokenResponse = execute.body().string();
+			log.info("token>" + tokenResponse);
+			JSONObject tokenObj = JSONObject.parseObject(tokenResponse);
+			String accessToken = tokenObj.getString("access_token");
+
 			// 发送模板消息
 			String sendMessageUrl = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send?access_token=" + accessToken;
 			HashMap<String, Object> sendParam = new HashMap<String, Object>();
 			sendParam.put("touser", param.getOpenId());
 			HashMap<String, Object> weappParam = new HashMap<String, Object>();
 			sendParam.put("weapp_template_msg", weappParam);
-
+			
 			weappParam.put("template_id", template_delivery); // 所需下发的模板消息的id
 			weappParam.put("form_id", param.getFromId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
 			weappParam.put("page", "pages/home/home");
-			Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
+			Map<String,TemplateParam> dataMap=new HashMap<String,TemplateParam>();
 			dataMap.put("keyword1", new TemplateParam(param.getDeliveryCode()));
 			dataMap.put("keyword2", new TemplateParam(param.getProductItemInfo()));
 			dataMap.put("keyword3", new TemplateParam(param.getDeliveryAddress()));
@@ -105,10 +95,10 @@ public class WeappImpl implements IMessageService {
 			dataMap.put("keyword6", new TemplateParam(param.getOrderNo()));
 			dataMap.put("keyword7", new TemplateParam(param.getDeliveryTime()));
 			weappParam.put("data", dataMap);
-			log.info("发送消息请求参数>" + JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect));
+			log.info("发送消息请求参数>" + JSONObject.toJSONString(sendParam,SerializerFeature.DisableCircularReferenceDetect));
 			// prepay_id
-			Response sendResponse = OkHttpUtils.postString()
-					.content(JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect)).url(sendMessageUrl).build()
+			Response sendResponse = OkHttpUtils.postString().content(JSONObject.toJSONString(sendParam,SerializerFeature.DisableCircularReferenceDetect)).url(sendMessageUrl)
+					.build()
 					.connTimeOut(1000L * 60L * 60L * 3).readTimeOut(1000L * 60L * 60L * 3).writeTimeOut(1000L * 60L * 60L * 3).execute();
 			String sendResponseString = sendResponse.body().string();
 			log.info("token>" + sendResponseString);

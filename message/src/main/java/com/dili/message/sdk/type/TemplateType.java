@@ -20,7 +20,9 @@ public enum TemplateType {
 	/** 团购失败通知 */
 	REFUND(6, "订单退款"),
 	/** 订单关闭提醒 */
-	CLOSE_ORDER(7, "订单关闭");
+	CLOSE_ORDER(7, "订单关闭"),
+	/** 订单关闭提醒 */
+	GOODS_WARNING(8, "可用库存告警通知");
 
 	private String name;
 	private int code;

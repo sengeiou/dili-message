@@ -57,4 +57,5 @@ public interface IMessageService {
 	 * 订单支付成功通知
 	 */
 	public boolean orderPaySuccess(OrderPaySuccessParam param);
+	
 }

@@ -18,6 +18,7 @@ import com.dili.message.sdk.domain.CampaignSuccessParam;
 import com.dili.message.sdk.domain.CloseOrderParam;
 import com.dili.message.sdk.domain.DeliveryParam;
 import com.dili.message.sdk.domain.DeliverySuccessParam;
+import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
 import com.dili.message.sdk.service.IMessageService;
@@ -44,9 +45,11 @@ public class AlidayuSmsImpl implements IMessageService {
 	 */
 	@Value("${alidayu.sms.templateid.delivery}")
 	public String template_delivery;
-	@Value("${alidayu.sms.templateid.refunds}")
+	@Value("${alidayu.sms.templateid.refund}")
 	public String template_refunds;
-
+	@Value("${alidayu.sms.templateid.goodsWarning}")
+	public String template_goodsWarning;
+	
 	@Override
 	public boolean delivery(DeliveryParam param) {
 		try {
@@ -108,7 +111,7 @@ public class AlidayuSmsImpl implements IMessageService {
 
 			SendSmsResponse sendSmsResponse = null;
 			sendSmsResponse = acsClient.getAcsResponse(request);
-			System.out.println("sendSmsResponse>" + JSONObject.toJSONString(sendSmsResponse));
+			log.info("sendSmsResponse>" + JSONObject.toJSONString(sendSmsResponse));
 			if (sendSmsResponse != null) {
 				return sendSmsResponse.getCode().equals("OK");
 			} else {
@@ -120,6 +123,41 @@ public class AlidayuSmsImpl implements IMessageService {
 		}
 	}
 
+	public boolean goodsWarning(GoodsWarningParam param) {
+		try {
+			// 可自助调整超时时间
+			System.setProperty("sun.net.client.defaultConnectTimeout", "10000");
+			System.setProperty("sun.net.client.defaultReadTimeout", "10000");
+
+			IClientProfile profile = DefaultProfile.getProfile("cn-hangzhou", app_key, secret);
+
+			DefaultProfile.addEndpoint("cn-hangzhou", "cn-hangzhou", "Dysmsapi", "dysmsapi.aliyuncs.com");
+			IAcsClient acsClient = new DefaultAcsClient(profile);
+
+			SendSmsRequest request = new SendSmsRequest();
+			request.setSignName(sms_sign_name);
+			request.setTemplateCode(app_key);
+			request.setPhoneNumbers(param.getMobile());
+			JSONObject json = new JSONObject();
+			json.put("area", param.getArea());
+			json.put("goods", param.getGoods());
+			json.put("amount}", param.getAmount());
+			request.setTemplateParam(json.toJSONString());
+
+			SendSmsResponse sendSmsResponse = null;
+			sendSmsResponse = acsClient.getAcsResponse(request);
+			log.info("sendSmsResponse>" + JSONObject.toJSONString(sendSmsResponse));
+			if (sendSmsResponse != null) {
+				return sendSmsResponse.getCode().equals("OK");
+			} else {
+				return false;
+			}
+		} catch (ClientException e) {                                    
+			log.error("用户[" + param.getMobile() + "]推送[" + TemplateType.REFUND + "]消息失败！", e);
+			return false;
+		}
+	}
+	
 	@Override
 	public boolean campaignSuccess(CampaignSuccessParam param) {
 		return false;

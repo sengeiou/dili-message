@@ -2,8 +2,11 @@ package com.dili.message.sdk.common;
 
 import java.util.HashMap;
 
+import javax.annotation.Resource;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dili.http.okhttp.OkHttpUtils;
@@ -17,16 +20,19 @@ import okhttp3.Response;
  * @author ：WangBo
  * @time ：2018年11月13日下午5:12:36
  */
+@Component
 public class AccessTokenUtil {
 	static Logger log = LoggerFactory.getLogger(AccessTokenUtil.class);
-	static RedisUtil r = new RedisUtil();
-	private static String token_redis_key;
+	@Resource
+	RedisUtil redisUtil;
+	private static String token_redis_key="access_token";
 	private static Long expireTime = 7200L;
+//	private static String accessToken;
 
-	public static String getToken(String appId, String appsecret) {
+	public String getToken(String appId, String appsecret) {
 		String accessToken = "";
 		try {
-			Object object = r.get(token_redis_key);
+			Object object = redisUtil.get(token_redis_key);
 			if (object == null) {
 				// 获取 access_token
 				HashMap<String, String> paramMap = new HashMap<String, String>();
@@ -41,7 +47,7 @@ public class AccessTokenUtil {
 				log.info("token>" + tokenResponse);
 				JSONObject tokenObj = JSONObject.parseObject(tokenResponse);
 				accessToken = tokenObj.getString("access_token");
-				r.set(token_redis_key, accessToken, expireTime);
+				redisUtil.set(token_redis_key, accessToken, expireTime);
 				return accessToken;
 			}
 		} catch (Exception e) {

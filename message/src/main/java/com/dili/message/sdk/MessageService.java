@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
-import com.dili.message.sdk.common.AccessTokenUtil;
 import com.dili.message.sdk.domain.CampaignFailureParam;
 import com.dili.message.sdk.domain.CampaignSuccessParam;
 import com.dili.message.sdk.domain.CloseOrderParam;
@@ -20,6 +19,7 @@ import com.dili.message.sdk.domain.DeliveryParam;
 import com.dili.message.sdk.domain.DeliverySuccessParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
+import com.dili.message.sdk.service.mp.MpImpl;
 import com.dili.message.sdk.service.sms.AlidayuSmsImpl;
 import com.dili.message.sdk.service.weapp.WeappImpl;
 import com.dili.message.sdk.type.MessageType;
@@ -39,6 +39,8 @@ public class MessageService {
 	AlidayuSmsImpl alidayuSmsImpl;
 	@Resource
 	WeappImpl weappImpl;
+	@Resource
+	MpImpl mpImpl;
 
 	@PostConstruct
 	private void init() {
@@ -53,7 +55,6 @@ public class MessageService {
 	 *            推送信息
 	 */
 	public void delivery(DeliveryParam param, MessageType... type) {
-//		String accessToken=AccessTokenUtil.getToken(appId, appsecret);
 		for (MessageType messageType : type) {
 			if (messageType == MessageType.SMS) {
 				SendMessageWork sendWork = new SendMessageWork(JSONObject.toJSONString(param), TemplateType.DELIVERY, alidayuSmsImpl);
@@ -62,7 +63,8 @@ public class MessageService {
 				SendMessageWork sendWork = new SendMessageWork(JSONObject.toJSONString(param), TemplateType.DELIVERY, weappImpl);
 				pool.execute(sendWork);
 			}else if(messageType == MessageType.MP) {
-				
+				SendMessageWork sendWork = new SendMessageWork(JSONObject.toJSONString(param), TemplateType.DELIVERY, mpImpl);
+				pool.execute(sendWork);
 			}
 		}
 
@@ -103,5 +105,20 @@ public class MessageService {
 	 * 订单支付成功通知
 	 */
 	public void orderPaySuccess(OrderPaySuccessParam param, MessageType... type) {
+	}
+	
+	public void goodsWarning(OrderPaySuccessParam param, MessageType... type) {
+		for (MessageType messageType : type) {
+			if (messageType == MessageType.SMS) {
+				SendMessageWork sendWork = new SendMessageWork(JSONObject.toJSONString(param), TemplateType.GOODS_WARNING, alidayuSmsImpl);
+				pool.execute(sendWork);
+			} else if (messageType == MessageType.WEAPP) {
+				SendMessageWork sendWork = new SendMessageWork(JSONObject.toJSONString(param), TemplateType.GOODS_WARNING, weappImpl);
+				pool.execute(sendWork);
+			}else if(messageType == MessageType.MP) {
+				SendMessageWork sendWork = new SendMessageWork(JSONObject.toJSONString(param), TemplateType.GOODS_WARNING, mpImpl);
+				pool.execute(sendWork);
+			}
+		}
 	}
 }
