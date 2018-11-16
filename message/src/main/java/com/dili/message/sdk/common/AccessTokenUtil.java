@@ -6,10 +6,12 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dili.http.okhttp.OkHttpUtils;
+import com.dili.message.sdk.exception.ApplicationException;
 import com.dili.ss.util.RedisUtil;
 
 import okhttp3.Response;
@@ -23,10 +25,10 @@ import okhttp3.Response;
 @Component
 public class AccessTokenUtil {
 	static Logger log = LoggerFactory.getLogger(AccessTokenUtil.class);
-	@Resource
+	@Autowired
 	RedisUtil redisUtil;
 	private static String token_redis_key="access_token";
-	private static Long expireTime = 7200L;
+	private static Long expireTime = 7100L;
 //	private static String accessToken;
 
 	public String getToken(String appId, String appsecret) {
@@ -49,9 +51,13 @@ public class AccessTokenUtil {
 				accessToken = tokenObj.getString("access_token");
 				redisUtil.set(token_redis_key, accessToken, expireTime);
 				return accessToken;
+			}else {
+				accessToken=object.toString();
 			}
 		} catch (Exception e) {
-			log.error("获取accessToken失败!",e);
+			log.error("获取accessToken出错",e);
+			throw new ApplicationException("获取accessToken出错！");
+			
 		}
 		return accessToken;
 	}

@@ -19,6 +19,7 @@ import com.dili.http.okhttp.OkHttpUtils;
 import com.dili.message.sdk.MessageService;
 import com.dili.message.sdk.common.AccessTokenUtil;
 import com.dili.message.sdk.domain.DeliveryParam;
+import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.type.MessageType;
 
 import io.swagger.annotations.Api;
@@ -160,25 +161,36 @@ public class WeappController {
 	public String sendAllMessage(@RequestBody String jsonBody) {
 		try {
 			LOG.info("小程序模板消息发送formId = " + jsonBody);
-			DeliveryParam param=new DeliveryParam();
-			param.setBusinessHours("8:00-20:00");
-			param.setDeliveryAddress("人民大道东6号");
-			param.setDeliveryCode("665752");
-			param.setDeliveryTime("2018.11.13下午14：30");
-			param.setFromId(JSONObject.parseObject(jsonBody).getString("formId"));
-			param.setMobile("18981883712");
-			param.setOpenId("oK0VK5Ef3lcQMkbfxEc5LD1dBEQk");
-			param.setOrderNo("XX36045872");
-			param.setProductItemInfo("鱼、人参、苹果");
-			param.setShopName("天安门一号店");
-			messageService.delivery(param, MessageType.WEAPP,MessageType.MP);
+			String formId=JSONObject.parseObject(jsonBody).getString("formId");
+			goodsWarning(formId);
 			return "sucess";
 		} catch (Exception e) {
 			LOG.error("小程序登录异常！", e);
 		}
 		return null;
 	}
-	
+	private void goodsWarning(String formId) {
+		GoodsWarningParam param=new GoodsWarningParam();
+		param.setAmount(53+"");
+		param.setArea("成都区域");;
+		param.setGoods("苹果");;
+		param.setMobile("18981883712");
+		messageService.goodsWarning(param, MessageType.WEAPP,MessageType.MP,MessageType.SMS);
+	}
+	private void sendDelivery(String formId) {
+		DeliveryParam param=new DeliveryParam();
+		param.setBusinessHours("8:00-20:00");
+		param.setDeliveryAddress("人民大道东6号");
+		param.setDeliveryCode("665752");
+		param.setDeliveryTime("2018.11.13下午14：30");
+		param.setFromId(formId);
+		param.setMobile("18981883712");
+		param.setOpenId("oK0VK5Ef3lcQMkbfxEc5LD1dBEQk");
+		param.setOrderNo("XX36045872");
+		param.setProductItemInfo("鱼、人参、苹果");
+		param.setShopName("天安门一号店");
+		messageService.delivery(param, MessageType.WEAPP,MessageType.MP);
+	}
 //	/**
 //	 * 同时推送小程序和公众号
 //	 */

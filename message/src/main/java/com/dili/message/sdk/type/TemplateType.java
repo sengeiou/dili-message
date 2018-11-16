@@ -7,8 +7,8 @@ package com.dili.message.sdk.type;
  * @time ：2018年11月12日上午11:06:11
  */
 public enum TemplateType {
-	/** 订单创建 */
-	PAY(1, "订单支付"),
+	/** 订单支付成功 */
+	PAY_SUCCESS(1, "订单支付"),
 	/** 开团成功提醒 */
 	CAMPAIGN_SUCCESS(2, "拼团成功"),
 	/** 退款通知 */
@@ -47,5 +47,8 @@ public enum TemplateType {
 	public void setCode(int code) {
 		this.code = code;
 	}
-
+	@Override
+	public String toString() {
+		return this.name;
+	}
 }

@@ -4,7 +4,7 @@ package com.dili.message.sdk.domain;
  * @author ：WangBo
  * @time ：2018年11月9日下午4:06:11
  */
-public class OrderPaySuccessParam {
+public class OrderPaySuccessParam extends BaseParam{
 	/** 订单编号 */
 	private String orderNo;
 	/** 商品名称 */

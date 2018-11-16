@@ -6,31 +6,19 @@ package com.dili.message.sdk.domain;
  * @author ：WangBo
  * @time ：2018年11月9日下午3:57:48
  */
-public class RefundParam extends BaseParam{
+public class RefundParam extends BaseParam {
 	/** 退款时间 */
 	private String time;
-	/** 退款说明 */
-	private String description;
+	/** 退款方式 */
+	private String refundMode;
 	/** 退款金额 */
 	private String amount;
-	/** 退费原因 */
+	/** 退款原因 */
 	private String cause;
 	/** 退款单号 */
-	private String refundsNo;
-	/** 商品详情 */
-	private String productItemInfo;
-
-	/**
-	 * 
-	 */
-	public RefundParam(String time, String description, String amount, String cause, String refundsNo, String productItemInfo) {
-		this.time = time;
-		this.description = description;
-		this.amount = amount;
-		this.cause = cause;
-		this.refundsNo = refundsNo;
-		this.productItemInfo = productItemInfo;
-	}
+	private String orderNo;
+	/** 备注 */
+	private String remark;
 
 	/** 退款时间 */
 	public String getTime() {
@@ -40,16 +28,6 @@ public class RefundParam extends BaseParam{
 	/** 退款时间 */
 	public void setTime(String time) {
 		this.time = time;
-	}
-
-	/** 退款说明 */
-	public String getDescription() {
-		return description;
-	}
-
-	/** 退款说明 */
-	public void setDescription(String description) {
-		this.description = description;
 	}
 
 	/** 退款金额 */
@@ -62,34 +40,44 @@ public class RefundParam extends BaseParam{
 		this.amount = amount;
 	}
 
-	/** 退费原因 */
+	/** 退款原因 */
 	public String getCause() {
 		return cause;
 	}
 
-	/** 退费原因 */
+	/** 退款原因 */
 	public void setCause(String cause) {
 		this.cause = cause;
 	}
 
 	/** 退款单号 */
-	public String getRefundsNo() {
-		return refundsNo;
+	public String getOrderNo() {
+		return orderNo;
 	}
 
 	/** 退款单号 */
-	public void setRefundsNo(String refundsNo) {
-		this.refundsNo = refundsNo;
+	public void setOrderNo(String orderNo) {
+		this.orderNo = orderNo;
 	}
 
-	/** 商品详情 */
-	public String getProductItemInfo() {
-		return productItemInfo;
+	/** 备注 */
+	public String getRemark() {
+		return remark;
 	}
 
-	/** 商品详情 */
-	public void setProductItemInfo(String productItemInfo) {
-		this.productItemInfo = productItemInfo;
+	/** 备注 */
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	/** 退款方式 */
+	public String getRefundMode() {
+		return refundMode;
+	}
+
+	/** 退款方式 */
+	public void setRefundMode(String refundMode) {
+		this.refundMode = refundMode;
 	}
 
 }

@@ -21,9 +21,11 @@ import com.dili.message.sdk.domain.CampaignSuccessParam;
 import com.dili.message.sdk.domain.CloseOrderParam;
 import com.dili.message.sdk.domain.DeliveryParam;
 import com.dili.message.sdk.domain.DeliverySuccessParam;
+import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
 import com.dili.message.sdk.service.IMessageService;
+import com.dili.message.sdk.type.TemplateType;
 import com.dili.ss.util.RedisUtil;
 import com.dili.ss.util.SpringUtil;
 
@@ -38,6 +40,7 @@ import okhttp3.Response;
 @Component
 public class WeappImpl implements IMessageService {
 	Logger log = LoggerFactory.getLogger(WeappImpl.class);
+	private static String messagetype = "小程序";
 	@Value("${weapp.appId}")
 	public String appId;
 	@Value("${weapp.appsecret}")
@@ -69,7 +72,6 @@ public class WeappImpl implements IMessageService {
 	@Override
 	public boolean delivery(DeliveryParam param) {
 		try {
-			log.info("小程序取货消息推送");
 			// // 获取 access_token
 			// HashMap<String, String> paramMap = new HashMap<String, String>();
 			// paramMap.put("appid", appId);
@@ -82,7 +84,7 @@ public class WeappImpl implements IMessageService {
 			// .connTimeOut(1000L * 60L * 60L * 3).readTimeOut(1000L * 60L * 60L *
 			// 3).writeTimeOut(1000L * 60L * 60L * 3).execute();
 			// String tokenResponse = execute.body().string();
-			// log.info("token>" + tokenResponse);
+			// log.info("response" + tokenResponse);
 			// JSONObject tokenObj = JSONObject.parseObject(tokenResponse);
 			// String accessToken = tokenObj.getString("access_token");
 			String accessToken = accessTokenUtil.getToken(appId, appsecret);
@@ -105,47 +107,250 @@ public class WeappImpl implements IMessageService {
 			dataMap.put("keyword6", new TemplateParam(param.getOrderNo()));
 			dataMap.put("keyword7", new TemplateParam(param.getDeliveryTime()));
 			weappParam.put("data", dataMap);
-			log.info("发送消息请求参数>" + JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect));
+			log.info(messagetype + "[" + TemplateType.DELIVERY + "]"
+					+ JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect));
 			// prepay_id
 			Response sendResponse = OkHttpUtils.postString()
 					.content(JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect)).url(sendMessageUrl).build()
 					.connTimeOut(1000L * 60L * 60L * 3).readTimeOut(1000L * 60L * 60L * 3).writeTimeOut(1000L * 60L * 60L * 3).execute();
 			String sendResponseString = sendResponse.body().string();
-			log.info("token>" + sendResponseString);
+			log.info("response" + sendResponseString);
 			return true;
 		} catch (Exception e) {
-			log.error("小程序推送取货通知异常！", e);
+			log.error(messagetype + "推送[" + TemplateType.DELIVERY + "]异常！", e);
 		}
 		return false;
 	}
 
 	@Override
 	public boolean refund(RefundParam param) {
+		try {
+			// // 获取 access_token
+			String accessToken = accessTokenUtil.getToken(appId, appsecret);
+			// 发送模板消息
+			String sendMessageUrl = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send?access_token=" + accessToken;
+			HashMap<String, Object> sendParam = new HashMap<String, Object>();
+			sendParam.put("touser", param.getOpenId());
+			HashMap<String, Object> weappParam = new HashMap<String, Object>();
+			sendParam.put("weapp_template_msg", weappParam);
+
+			weappParam.put("template_id", template_delivery); // 所需下发的模板消息的id
+			weappParam.put("form_id", param.getFromId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
+			weappParam.put("page", "pages/home/home");
+			Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
+			dataMap.put("keyword1", new TemplateParam(param.getAmount()));
+			dataMap.put("keyword2", new TemplateParam(param.getCause()));
+			dataMap.put("keyword3", new TemplateParam(param.getTime()));
+			dataMap.put("keyword4", new TemplateParam(param.getRefundMode()));
+			dataMap.put("keyword5", new TemplateParam(param.getOrderNo()));
+			dataMap.put("keyword6", new TemplateParam(param.getRemark()));
+			weappParam.put("data", dataMap);
+			log.info(messagetype + "[" + TemplateType.REFUND + "]"
+					+ JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect));
+			// prepay_id
+			Response sendResponse = OkHttpUtils.postString()
+					.content(JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect)).url(sendMessageUrl).build()
+					.connTimeOut(1000L * 60L * 60L * 3).readTimeOut(1000L * 60L * 60L * 3).writeTimeOut(1000L * 60L * 60L * 3).execute();
+			String sendResponseString = sendResponse.body().string();
+			log.info("response" + sendResponseString);
+			return true;
+		} catch (Exception e) {
+			log.error(messagetype + "推送[" + TemplateType.REFUND + "]异常！", e);
+		}
 		return false;
 	}
 
 	@Override
 	public boolean campaignSuccess(CampaignSuccessParam param) {
+		try {
+			log.info("小程序取货消息推送");
+			// // 获取 access_token
+			String accessToken = accessTokenUtil.getToken(appId, appsecret);
+			// 发送模板消息
+			String sendMessageUrl = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send?access_token=" + accessToken;
+			HashMap<String, Object> sendParam = new HashMap<String, Object>();
+			sendParam.put("touser", param.getOpenId());
+			HashMap<String, Object> weappParam = new HashMap<String, Object>();
+			sendParam.put("weapp_template_msg", weappParam);
+
+			weappParam.put("template_id", template_delivery); // 所需下发的模板消息的id
+			weappParam.put("form_id", param.getFromId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
+			weappParam.put("page", "pages/home/home");
+			Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
+			dataMap.put("keyword1", new TemplateParam(param.getProductName()));
+			dataMap.put("keyword2", new TemplateParam(param.getPeoples()));
+			dataMap.put("keyword3", new TemplateParam(param.getPrice()));
+			dataMap.put("keyword4", new TemplateParam(param.getTimeRemaining()));
+			weappParam.put("data", dataMap);
+			log.info(messagetype + "[" + TemplateType.CAMPAIGN_SUCCESS + "]"
+					+ JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect));
+			// prepay_id
+			Response sendResponse = OkHttpUtils.postString()
+					.content(JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect)).url(sendMessageUrl).build()
+					.connTimeOut(1000L * 60L * 60L * 3).readTimeOut(1000L * 60L * 60L * 3).writeTimeOut(1000L * 60L * 60L * 3).execute();
+			String sendResponseString = sendResponse.body().string();
+			log.info("response" + sendResponseString);
+			return true;
+		} catch (Exception e) {
+			log.error(messagetype + "推送[" + TemplateType.CAMPAIGN_SUCCESS + "]异常！", e);
+		}
 		return false;
 	}
 
 	@Override
 	public boolean closeOrder(CloseOrderParam param) {
+		try {
+			log.info("小程序订单关闭推送");
+			// // 获取 access_token
+			String accessToken = accessTokenUtil.getToken(appId, appsecret);
+			// 发送模板消息
+			String sendMessageUrl = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send?access_token=" + accessToken;
+			HashMap<String, Object> sendParam = new HashMap<String, Object>();
+			sendParam.put("touser", param.getOpenId());
+			HashMap<String, Object> weappParam = new HashMap<String, Object>();
+			sendParam.put("weapp_template_msg", weappParam);
+
+			weappParam.put("template_id", template_delivery); // 所需下发的模板消息的id
+			weappParam.put("form_id", param.getFromId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
+			weappParam.put("page", "pages/home/home");
+			Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
+			dataMap.put("keyword1", new TemplateParam(param.getProductName()));
+			dataMap.put("keyword2", new TemplateParam(param.getOrderNo()));
+			dataMap.put("keyword3", new TemplateParam(param.getAmount()));
+			dataMap.put("keyword4", new TemplateParam(param.getCreateOrderTime()));
+			dataMap.put("keyword5", new TemplateParam(param.getKindlyReminder()));
+			weappParam.put("data", dataMap);
+			log.info(messagetype + "[" + TemplateType.CLOSE_ORDER + "]"
+					+ JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect));
+			// prepay_id
+			Response sendResponse = OkHttpUtils.postString()
+					.content(JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect)).url(sendMessageUrl).build()
+					.connTimeOut(1000L * 60L * 60L * 3).readTimeOut(1000L * 60L * 60L * 3).writeTimeOut(1000L * 60L * 60L * 3).execute();
+			String sendResponseString = sendResponse.body().string();
+			log.info("response" + sendResponseString);
+			return true;
+		} catch (Exception e) {
+			log.error(messagetype + "推送[" + TemplateType.CLOSE_ORDER + "]异常！", e);
+		}
 		return false;
 	}
 
 	@Override
 	public boolean campaignFailure(CampaignFailureParam param) {
+		try {
+			log.info("小程序订单关闭推送");
+			// // 获取 access_token
+			String accessToken = accessTokenUtil.getToken(appId, appsecret);
+			// 发送模板消息
+			String sendMessageUrl = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send?access_token=" + accessToken;
+			HashMap<String, Object> sendParam = new HashMap<String, Object>();
+			sendParam.put("touser", param.getOpenId());
+			HashMap<String, Object> weappParam = new HashMap<String, Object>();
+			sendParam.put("weapp_template_msg", weappParam);
+
+			weappParam.put("template_id", template_delivery); // 所需下发的模板消息的id
+			weappParam.put("form_id", param.getFromId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
+			weappParam.put("page", "pages/home/home");
+			Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
+			dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
+			dataMap.put("keyword2", new TemplateParam(param.getProcessingResults()));
+			dataMap.put("keyword3", new TemplateParam(param.getCampaignName()));
+			dataMap.put("keyword4", new TemplateParam(param.getAmount()));
+			dataMap.put("keyword5", new TemplateParam(param.getFailureCause()));
+			dataMap.put("keyword6", new TemplateParam(param.getCampaignProduct()));
+			weappParam.put("data", dataMap);
+			log.info(messagetype + "[" + TemplateType.CAMPAIGN_FAILURE + "]"
+					+ JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect));
+			// prepay_id
+			Response sendResponse = OkHttpUtils.postString()
+					.content(JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect)).url(sendMessageUrl).build()
+					.connTimeOut(1000L * 60L * 60L * 3).readTimeOut(1000L * 60L * 60L * 3).writeTimeOut(1000L * 60L * 60L * 3).execute();
+			String sendResponseString = sendResponse.body().string();
+			log.info("response" + sendResponseString);
+			return true;
+		} catch (Exception e) {
+			log.error(messagetype + "推送[" + TemplateType.CAMPAIGN_FAILURE + "]异常！", e);
+		}
 		return false;
 	}
 
 	@Override
-	public boolean deliverySuccess(DeliverySuccessParam parameterObject) {
+	public boolean deliverySuccess(DeliverySuccessParam param) {
+		try {
+			log.info("小程序订单关闭推送");
+			// // 获取 access_token
+			String accessToken = accessTokenUtil.getToken(appId, appsecret);
+			// 发送模板消息
+			String sendMessageUrl = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send?access_token=" + accessToken;
+			HashMap<String, Object> sendParam = new HashMap<String, Object>();
+			sendParam.put("touser", param.getOpenId());
+			HashMap<String, Object> weappParam = new HashMap<String, Object>();
+			sendParam.put("weapp_template_msg", weappParam);
+
+			weappParam.put("template_id", template_delivery); // 所需下发的模板消息的id
+			weappParam.put("form_id", param.getFromId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
+			weappParam.put("page", "pages/home/home");
+			Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
+			dataMap.put("keyword1", new TemplateParam(param.getProductInfo()));
+			dataMap.put("keyword2", new TemplateParam(param.getOrderNo()));
+			dataMap.put("keyword3", new TemplateParam(param.getDeliveryTime()));
+			dataMap.put("keyword4", new TemplateParam(param.getDeliveryShop()));
+			weappParam.put("data", dataMap);
+			log.info(messagetype + "[" + TemplateType.DELIVERY_SUCCESS + "]"
+					+ JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect));
+			// prepay_id
+			Response sendResponse = OkHttpUtils.postString()
+					.content(JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect)).url(sendMessageUrl).build()
+					.connTimeOut(1000L * 60L * 60L * 3).readTimeOut(1000L * 60L * 60L * 3).writeTimeOut(1000L * 60L * 60L * 3).execute();
+			String sendResponseString = sendResponse.body().string();
+			log.info("response" + sendResponseString);
+			return true;
+		} catch (Exception e) {
+			log.error(messagetype + "推送[" + TemplateType.DELIVERY_SUCCESS + "]异常！", e);
+		}
 		return false;
 	}
 
 	@Override
 	public boolean orderPaySuccess(OrderPaySuccessParam param) {
+		try {
+			log.info("小程序订单关闭推送");
+			// 获取 access_token
+			String accessToken = accessTokenUtil.getToken(appId, appsecret);
+			// 发送模板消息
+			String sendMessageUrl = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send?access_token=" + accessToken;
+			HashMap<String, Object> sendParam = new HashMap<String, Object>();
+			sendParam.put("touser", param.getOpenId());
+			HashMap<String, Object> weappParam = new HashMap<String, Object>();
+			sendParam.put("weapp_template_msg", weappParam);
+
+			weappParam.put("template_id", template_delivery); // 所需下发的模板消息的id
+			weappParam.put("form_id", param.getFromId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
+			weappParam.put("page", "pages/home/home");
+			Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
+			dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
+			dataMap.put("keyword2", new TemplateParam(param.getProductName()));
+			dataMap.put("keyword3", new TemplateParam(param.getAmount()));
+			dataMap.put("keyword4", new TemplateParam(param.getCreateOrderTime()));
+			weappParam.put("data", dataMap);
+			log.info(messagetype + "[" + TemplateType.PAY_SUCCESS + "]"
+					+ JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect));
+			// prepay_id
+			Response sendResponse = OkHttpUtils.postString()
+					.content(JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect)).url(sendMessageUrl).build()
+					.connTimeOut(1000L * 60L * 60L * 3).readTimeOut(1000L * 60L * 60L * 3).writeTimeOut(1000L * 60L * 60L * 3).execute();
+			String sendResponseString = sendResponse.body().string();
+			log.info("response" + sendResponseString);
+			return true;
+		} catch (Exception e) {
+			log.error(messagetype + "推送[" + TemplateType.PAY_SUCCESS + "]异常！", e);
+		}
+		return false;
+	}
+
+	@Override
+	public boolean goodsWarning(GoodsWarningParam param) {
+		log.info(messagetype+"推送["+TemplateType.GOODS_WARNING+"]暂未实现！");
 		return false;
 	}
 

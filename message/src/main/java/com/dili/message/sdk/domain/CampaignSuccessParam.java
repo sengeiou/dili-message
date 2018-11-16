@@ -11,7 +11,7 @@ package com.dili.message.sdk.domain;
  * @author     ：WangBo
  * @time       ：2018年11月9日下午3:54:39
  */
-public class CampaignSuccessParam {
+public class CampaignSuccessParam extends BaseParam{
 	/** 开团时间 */
 	private String campaignTimeStart;
 	/** 截至时间 */

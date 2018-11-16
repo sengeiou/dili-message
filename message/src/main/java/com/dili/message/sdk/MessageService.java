@@ -17,6 +17,7 @@ import com.dili.message.sdk.domain.CampaignSuccessParam;
 import com.dili.message.sdk.domain.CloseOrderParam;
 import com.dili.message.sdk.domain.DeliveryParam;
 import com.dili.message.sdk.domain.DeliverySuccessParam;
+import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
 import com.dili.message.sdk.service.mp.MpImpl;
@@ -50,23 +51,9 @@ public class MessageService {
 
 	/**
 	 * 取货通知
-	 * 
-	 * @param param
-	 *            推送信息
 	 */
 	public void delivery(DeliveryParam param, MessageType... type) {
-		for (MessageType messageType : type) {
-			if (messageType == MessageType.SMS) {
-				SendMessageWork sendWork = new SendMessageWork(JSONObject.toJSONString(param), TemplateType.DELIVERY, alidayuSmsImpl);
-				pool.execute(sendWork);
-			} else if (messageType == MessageType.WEAPP) {
-				SendMessageWork sendWork = new SendMessageWork(JSONObject.toJSONString(param), TemplateType.DELIVERY, weappImpl);
-				pool.execute(sendWork);
-			}else if(messageType == MessageType.MP) {
-				SendMessageWork sendWork = new SendMessageWork(JSONObject.toJSONString(param), TemplateType.DELIVERY, mpImpl);
-				pool.execute(sendWork);
-			}
-		}
+		executeWork(JSONObject.toJSONString(param), TemplateType.DELIVERY, type);
 
 	}
 
@@ -74,49 +61,61 @@ public class MessageService {
 	 * 开团成功提醒
 	 */
 	public void campaignSuccess(CampaignSuccessParam param, MessageType... type) {
-
+		executeWork(JSONObject.toJSONString(param), TemplateType.CAMPAIGN_SUCCESS, type);
 	}
 
 	/**
 	 * 退款通知
 	 */
 	public void refund(RefundParam param, MessageType... type) {
+		executeWork(JSONObject.toJSONString(param), TemplateType.REFUND, type);
 	}
 
 	/**
 	 * 订单关闭提醒
 	 */
 	public void closeOrder(CloseOrderParam param, MessageType... type) {
+		executeWork(JSONObject.toJSONString(param), TemplateType.CLOSE_ORDER, type);
 	}
 
 	/**
 	 * 团购失败通知
 	 */
 	public void campaignFailure(CampaignFailureParam param, MessageType... type) {
+		executeWork(JSONObject.toJSONString(param), TemplateType.CAMPAIGN_FAILURE, type);
 	}
 
 	/**
 	 * 取货成功
 	 */
 	public void deliverySuccess(DeliverySuccessParam param, MessageType... type) {
+		executeWork(JSONObject.toJSONString(param), TemplateType.DELIVERY_SUCCESS, type);
 	}
 
 	/**
 	 * 订单支付成功通知
 	 */
 	public void orderPaySuccess(OrderPaySuccessParam param, MessageType... type) {
+		executeWork(JSONObject.toJSONString(param), TemplateType.PAY_SUCCESS, type);
 	}
-	
-	public void goodsWarning(OrderPaySuccessParam param, MessageType... type) {
+
+	/**
+	 * 商品告警通知
+	 */
+	public void goodsWarning(GoodsWarningParam param, MessageType... type) {
+		executeWork(JSONObject.toJSONString(param), TemplateType.GOODS_WARNING, type);
+	}
+
+	private void executeWork(String paramJsonStr, TemplateType templateType, MessageType... type) {
 		for (MessageType messageType : type) {
 			if (messageType == MessageType.SMS) {
-				SendMessageWork sendWork = new SendMessageWork(JSONObject.toJSONString(param), TemplateType.GOODS_WARNING, alidayuSmsImpl);
+				SendMessageWork sendWork = new SendMessageWork(paramJsonStr, templateType, alidayuSmsImpl);
 				pool.execute(sendWork);
 			} else if (messageType == MessageType.WEAPP) {
-				SendMessageWork sendWork = new SendMessageWork(JSONObject.toJSONString(param), TemplateType.GOODS_WARNING, weappImpl);
+				SendMessageWork sendWork = new SendMessageWork(paramJsonStr, templateType, weappImpl);
 				pool.execute(sendWork);
-			}else if(messageType == MessageType.MP) {
-				SendMessageWork sendWork = new SendMessageWork(JSONObject.toJSONString(param), TemplateType.GOODS_WARNING, mpImpl);
+			} else if (messageType == MessageType.MP) {
+				SendMessageWork sendWork = new SendMessageWork(paramJsonStr, templateType, mpImpl);
 				pool.execute(sendWork);
 			}
 		}

@@ -4,7 +4,7 @@ package com.dili.message.sdk.domain;
  * @author ：WangBo
  * @time ：2018年11月9日下午4:03:17
  */
-public class CampaignFailureParam {
+public class CampaignFailureParam extends BaseParam{
 	/** 订单号 */
 	private String orderNo;
 	/** 处理结果 */

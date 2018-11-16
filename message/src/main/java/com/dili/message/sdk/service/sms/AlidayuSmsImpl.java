@@ -33,6 +33,8 @@ import com.dili.message.sdk.type.TemplateType;
 @Component
 public class AlidayuSmsImpl implements IMessageService {
 	Logger log = LoggerFactory.getLogger(AlidayuSmsImpl.class);
+	private static String messagetype = "短信";
+	
 	@Value("${alidayu.sms.app.key}")
 	public String app_key;
 	@Value("${alidayu.sms.secret}")
@@ -46,7 +48,7 @@ public class AlidayuSmsImpl implements IMessageService {
 	@Value("${alidayu.sms.templateid.delivery}")
 	public String template_delivery;
 	@Value("${alidayu.sms.templateid.refund}")
-	public String template_refunds;
+	public String template_refund;
 	@Value("${alidayu.sms.templateid.goodsWarning}")
 	public String template_goodsWarning;
 	
@@ -102,10 +104,10 @@ public class AlidayuSmsImpl implements IMessageService {
 
 			SendSmsRequest request = new SendSmsRequest();
 			request.setSignName(sms_sign_name);
-			request.setTemplateCode(app_key);
+			request.setTemplateCode(template_refund);
 			request.setPhoneNumbers(param.getMobile());
 			JSONObject json = new JSONObject();
-			json.put("order", param.getRefundsNo());
+			json.put("order", param.getOrderNo());
 			json.put("amount", param.getAmount());
 			request.setTemplateParam(json.toJSONString());
 
@@ -117,7 +119,7 @@ public class AlidayuSmsImpl implements IMessageService {
 			} else {
 				return false;
 			}
-		} catch (ClientException e) {                                    
+		} catch (Exception e) {                                    
 			log.error("用户[" + param.getMobile() + "]推送[" + TemplateType.REFUND + "]消息失败！", e);
 			return false;
 		}
@@ -136,12 +138,12 @@ public class AlidayuSmsImpl implements IMessageService {
 
 			SendSmsRequest request = new SendSmsRequest();
 			request.setSignName(sms_sign_name);
-			request.setTemplateCode(app_key);
+			request.setTemplateCode(template_goodsWarning);
 			request.setPhoneNumbers(param.getMobile());
 			JSONObject json = new JSONObject();
 			json.put("area", param.getArea());
 			json.put("goods", param.getGoods());
-			json.put("amount}", param.getAmount());
+			json.put("amount", param.getAmount());
 			request.setTemplateParam(json.toJSONString());
 
 			SendSmsResponse sendSmsResponse = null;
@@ -153,33 +155,38 @@ public class AlidayuSmsImpl implements IMessageService {
 				return false;
 			}
 		} catch (ClientException e) {                                    
-			log.error("用户[" + param.getMobile() + "]推送[" + TemplateType.REFUND + "]消息失败！", e);
+			log.error("用户[" + param.getMobile() + "]推送[" + TemplateType.GOODS_WARNING + "]消息失败！", e);
 			return false;
 		}
 	}
 	
 	@Override
 	public boolean campaignSuccess(CampaignSuccessParam param) {
+		log.info(messagetype+"推送["+TemplateType.CAMPAIGN_SUCCESS+"]暂未实现！");
 		return false;
 	}
 
 	@Override
 	public boolean closeOrder(CloseOrderParam param) {
+		log.info(messagetype+"推送["+TemplateType.CLOSE_ORDER+"]暂未实现！");
 		return false;
 	}
 
 	@Override
 	public boolean campaignFailure(CampaignFailureParam param) {
+		log.info(messagetype+"推送["+TemplateType.CAMPAIGN_FAILURE+"]暂未实现！");
 		return false;
 	}
 
 	@Override
 	public boolean deliverySuccess(DeliverySuccessParam parameterObject) {
+		log.info(messagetype+"推送["+TemplateType.DELIVERY_SUCCESS+"]暂未实现！");
 		return false;
 	}
 
 	@Override
 	public boolean orderPaySuccess(OrderPaySuccessParam param) {
+		log.info(messagetype+"推送["+TemplateType.PAY_SUCCESS+"]暂未实现！");
 		return false;
 	}
 

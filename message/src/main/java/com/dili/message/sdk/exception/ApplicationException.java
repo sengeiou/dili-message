@@ -6,11 +6,11 @@ package com.dili.message.sdk.exception;
  * @author     ：WangBo
  * @time       ：2018年11月9日下午2:08:08
  */
-public class SendMessageException  extends RuntimeException{
+public class ApplicationException  extends RuntimeException{
 
 	/** */
 	private static final long serialVersionUID = 1L;
-	public SendMessageException(String msg) {
+	public ApplicationException(String msg) {
 		super(msg);
 	}
 }

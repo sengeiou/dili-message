@@ -4,7 +4,7 @@ package com.dili.message.sdk.domain;
  * @author ：WangBo
  * @time ：2018年11月9日下午4:01:23
  */
-public class CloseOrderParam {
+public class CloseOrderParam extends BaseParam {
 	/** 商品名称 */
 	private String productName;
 	/** 订单编号 */
@@ -13,6 +13,8 @@ public class CloseOrderParam {
 	private String amount;
 	/** 下单时间 */
 	private String createOrderTime;
+	/** 订单关闭时间 */
+	private String closeOrderTime;
 	/** 温馨提示 */
 	private String kindlyReminder;
 
@@ -64,6 +66,16 @@ public class CloseOrderParam {
 	/** 温馨提示 */
 	public void setKindlyReminder(String kindlyReminder) {
 		this.kindlyReminder = kindlyReminder;
+	}
+
+	/** 订单关闭时间 */
+	public String getCloseOrderTime() {
+		return closeOrderTime;
+	}
+
+	/** 订单关闭时间 */
+	public void setCloseOrderTime(String closeOrderTime) {
+		this.closeOrderTime = closeOrderTime;
 	}
 
 }
