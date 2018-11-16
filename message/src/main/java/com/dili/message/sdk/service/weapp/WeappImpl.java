@@ -93,7 +93,7 @@ public class WeappImpl implements IMessageService {
 			sendParam.put("weapp_template_msg", weappParam);
 
 			weappParam.put("template_id", template_delivery); // 所需下发的模板消息的id
-			weappParam.put("form_id", param.getFromId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
+			weappParam.put("form_id", param.getFormId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
 			weappParam.put("page", "pages/home/home");
 			Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
 			dataMap.put("keyword1", new TemplateParam(param.getDeliveryCode()));
@@ -132,7 +132,7 @@ public class WeappImpl implements IMessageService {
 			sendParam.put("weapp_template_msg", weappParam);
 
 			weappParam.put("template_id", template_delivery); // 所需下发的模板消息的id
-			weappParam.put("form_id", param.getFromId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
+			weappParam.put("form_id", param.getFormId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
 			weappParam.put("page", "pages/home/home");
 			Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
 			dataMap.put("keyword1", new TemplateParam(param.getAmount()));
@@ -171,7 +171,7 @@ public class WeappImpl implements IMessageService {
 			sendParam.put("weapp_template_msg", weappParam);
 
 			weappParam.put("template_id", template_delivery); // 所需下发的模板消息的id
-			weappParam.put("form_id", param.getFromId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
+			weappParam.put("form_id", param.getFormId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
 			weappParam.put("page", "pages/home/home");
 			Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
 			dataMap.put("keyword1", new TemplateParam(param.getProductName()));
@@ -208,7 +208,7 @@ public class WeappImpl implements IMessageService {
 			sendParam.put("weapp_template_msg", weappParam);
 
 			weappParam.put("template_id", template_delivery); // 所需下发的模板消息的id
-			weappParam.put("form_id", param.getFromId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
+			weappParam.put("form_id", param.getFormId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
 			weappParam.put("page", "pages/home/home");
 			Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
 			dataMap.put("keyword1", new TemplateParam(param.getProductName()));
@@ -246,7 +246,7 @@ public class WeappImpl implements IMessageService {
 			sendParam.put("weapp_template_msg", weappParam);
 
 			weappParam.put("template_id", template_delivery); // 所需下发的模板消息的id
-			weappParam.put("form_id", param.getFromId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
+			weappParam.put("form_id", param.getFormId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
 			weappParam.put("page", "pages/home/home");
 			Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
 			dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
@@ -285,7 +285,7 @@ public class WeappImpl implements IMessageService {
 			sendParam.put("weapp_template_msg", weappParam);
 
 			weappParam.put("template_id", template_delivery); // 所需下发的模板消息的id
-			weappParam.put("form_id", param.getFromId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
+			weappParam.put("form_id", param.getFormId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
 			weappParam.put("page", "pages/home/home");
 			Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
 			dataMap.put("keyword1", new TemplateParam(param.getProductInfo()));
@@ -322,7 +322,7 @@ public class WeappImpl implements IMessageService {
 			sendParam.put("weapp_template_msg", weappParam);
 
 			weappParam.put("template_id", template_delivery); // 所需下发的模板消息的id
-			weappParam.put("form_id", param.getFromId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
+			weappParam.put("form_id", param.getFormId()); // 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的
 			weappParam.put("page", "pages/home/home");
 			Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
 			dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));

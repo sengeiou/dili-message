@@ -12,7 +12,7 @@ public class BaseParam {
 	/** 公众号或小程序必填 */
 	private String openId;
 	/** 表单号(小程序必填) */
-	private String fromId;
+	private String formId;
 	/** 支付号(小程序必填) */
 	private String payId;
 
@@ -37,13 +37,13 @@ public class BaseParam {
 	}
 
 	/** 表单号(小程序必填) */
-	public String getFromId() {
-		return fromId;
+	public String getFormId() {
+		return formId;
 	}
 
 	/** 表单号(小程序必填) */
-	public void setFromId(String fromId) {
-		this.fromId = fromId;
+	public void setFormId(String formId) {
+		this.formId = formId;
 	}
 
 	/** 支付号(小程序必填) */
