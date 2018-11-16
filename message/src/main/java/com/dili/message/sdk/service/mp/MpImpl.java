@@ -24,10 +24,7 @@ import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
 import com.dili.message.sdk.service.IMessageService;
-import com.dili.message.sdk.type.MessageType;
 import com.dili.message.sdk.type.TemplateType;
-import com.dili.ss.util.RedisUtil;
-import com.dili.ss.util.SpringUtil;
 
 import okhttp3.Response;
 

@@ -2,8 +2,6 @@ package com.dili.message.sdk.common;
 
 import java.util.HashMap;
 
-import javax.annotation.Resource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,7 @@ import okhttp3.Response;
 
 /**
  * @description：
- * 
+ * 		定时获取AccessToken
  * @author ：WangBo
  * @time ：2018年11月13日下午5:12:36
  */
@@ -31,6 +29,9 @@ public class AccessTokenUtil {
 	private static Long expireTime = 7100L;
 //	private static String accessToken;
 
+	/**
+	 * 从微信接口获取access_token,首次获取后保存到redis设置7100s的有效期,当redis中取值为空时再次从微信接口中获取
+	 */
 	public String getToken(String appId, String appsecret) {
 		String accessToken = "";
 		try {
