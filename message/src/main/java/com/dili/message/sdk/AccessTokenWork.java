@@ -26,7 +26,7 @@ public class AccessTokenWork implements Runnable {
 	public void run() {
 		if (templateType == TemplateType.DELIVERY) {
 			DeliveryParam sendParam = JSONObject.parseObject(param, DeliveryParam.class);
-			messageService.delivery(sendParam);
+//			messageService.delivery(sendParam);
 		}
 	}
 

@@ -1,5 +1,7 @@
 package com.dili.message.sdk;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -53,7 +55,9 @@ public class MessageService {
 	 * 取货通知
 	 */
 	public void delivery(DeliveryParam param, MessageType... type) {
-		executeWork(JSONObject.toJSONString(param), TemplateType.DELIVERY, type);
+		List<DeliveryParam> list = new ArrayList<DeliveryParam>();
+		list.add(param);
+		executeWork(JSONObject.toJSONString(list), TemplateType.DELIVERY, type);
 
 	}
 
@@ -61,48 +65,119 @@ public class MessageService {
 	 * 开团成功提醒
 	 */
 	public void campaignSuccess(CampaignSuccessParam param, MessageType... type) {
-		executeWork(JSONObject.toJSONString(param), TemplateType.CAMPAIGN_SUCCESS, type);
+		List<CampaignSuccessParam> list = new ArrayList<CampaignSuccessParam>();
+		list.add(param);
+		executeWork(JSONObject.toJSONString(list), TemplateType.CAMPAIGN_SUCCESS, type);
 	}
 
 	/**
 	 * 退款通知
 	 */
 	public void refund(RefundParam param, MessageType... type) {
-		executeWork(JSONObject.toJSONString(param), TemplateType.REFUND, type);
+		List<RefundParam> list = new ArrayList<RefundParam>();
+		list.add(param);
+		executeWork(JSONObject.toJSONString(list), TemplateType.REFUND, type);
 	}
 
 	/**
 	 * 订单关闭提醒
 	 */
 	public void closeOrder(CloseOrderParam param, MessageType... type) {
-		executeWork(JSONObject.toJSONString(param), TemplateType.CLOSE_ORDER, type);
+		List<CloseOrderParam> list = new ArrayList<CloseOrderParam>();
+		list.add(param);
+		executeWork(JSONObject.toJSONString(list), TemplateType.CLOSE_ORDER, type);
 	}
 
 	/**
 	 * 团购失败通知
 	 */
 	public void campaignFailure(CampaignFailureParam param, MessageType... type) {
-		executeWork(JSONObject.toJSONString(param), TemplateType.CAMPAIGN_FAILURE, type);
+		List<CampaignFailureParam> list = new ArrayList<CampaignFailureParam>();
+		list.add(param);
+		executeWork(JSONObject.toJSONString(list), TemplateType.CAMPAIGN_FAILURE, type);
 	}
 
 	/**
 	 * 取货成功
 	 */
 	public void deliverySuccess(DeliverySuccessParam param, MessageType... type) {
-		executeWork(JSONObject.toJSONString(param), TemplateType.DELIVERY_SUCCESS, type);
+		List<DeliverySuccessParam> list = new ArrayList<DeliverySuccessParam>();
+		list.add(param);
+		executeWork(JSONObject.toJSONString(list), TemplateType.DELIVERY_SUCCESS, type);
 	}
 
 	/**
 	 * 订单支付成功通知
 	 */
 	public void orderPaySuccess(OrderPaySuccessParam param, MessageType... type) {
-		executeWork(JSONObject.toJSONString(param), TemplateType.PAY_SUCCESS, type);
+		List<OrderPaySuccessParam> list = new ArrayList<OrderPaySuccessParam>();
+		list.add(param);
+		executeWork(JSONObject.toJSONString(list), TemplateType.PAY_SUCCESS, type);
 	}
 
 	/**
 	 * 商品告警通知
 	 */
 	public void goodsWarning(GoodsWarningParam param, MessageType... type) {
+		List<GoodsWarningParam> list = new ArrayList<GoodsWarningParam>();
+		list.add(param);
+		executeWork(JSONObject.toJSONString(list), TemplateType.GOODS_WARNING, type);
+	}
+
+	/**
+	 * 取货通知
+	 */
+	public void delivery(List<DeliveryParam> param, MessageType... type) {
+		executeWork(JSONObject.toJSONString(param), TemplateType.DELIVERY, type);
+
+	}
+
+	/**
+	 * 开团成功提醒
+	 */
+	public void campaignSuccess(List<CampaignSuccessParam> param, MessageType... type) {
+		executeWork(JSONObject.toJSONString(param), TemplateType.CAMPAIGN_SUCCESS, type);
+	}
+
+	/**
+	 * 退款通知
+	 */
+	public void refund(List<RefundParam> param, MessageType... type) {
+		executeWork(JSONObject.toJSONString(param), TemplateType.REFUND, type);
+	}
+
+	/**
+	 * 订单关闭提醒
+	 */
+	public void closeOrder(List<CloseOrderParam> param, MessageType... type) {
+		executeWork(JSONObject.toJSONString(param), TemplateType.CLOSE_ORDER, type);
+	}
+
+	/**
+	 * 团购失败通知
+	 */
+	public void campaignFailure(List<CampaignFailureParam> param, MessageType... type) {
+		executeWork(JSONObject.toJSONString(param), TemplateType.CAMPAIGN_FAILURE, type);
+	}
+
+	/**
+	 * 取货成功
+	 */
+	public void deliverySuccess(List<DeliverySuccessParam> param, MessageType... type) {
+		executeWork(JSONObject.toJSONString(param), TemplateType.DELIVERY_SUCCESS, type);
+	}
+
+	/**
+	 * 订单支付成功通知
+	 */
+	public void orderPaySuccess(List<OrderPaySuccessParam> param, MessageType... type) {
+		executeWork(JSONObject.toJSONString(param), TemplateType.PAY_SUCCESS, type);
+	}
+
+	/**
+	 * 商品告警通知
+	 */
+	public void goodsWarning(List<GoodsWarningParam> param, MessageType... type) {
 		executeWork(JSONObject.toJSONString(param), TemplateType.GOODS_WARNING, type);
 	}
 

@@ -1,10 +1,12 @@
 package com.dili.message.sdk.service.mp;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -71,159 +73,210 @@ public class MpImpl implements IMessageService {
 	public String template_orderPaySuccess;
 
 	@Override
-	public boolean delivery(DeliveryParam param) {
-		log.error(messagetype + "推送[" + TemplateType.DELIVERY + "]暂未实现！");
-		return false;
+	public boolean delivery(List<DeliveryParam> params) {
+		boolean ret = false;
+		try {
+			log.info(messagetype + "[" + TemplateType.DELIVERY + "]消息推送");
+			String accessToken = accessTokenUtil.getToken(weappAppId, appsecret);
+			for (DeliveryParam param : params) {
+				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
+				dataMap.put("first", new TemplateParam(TemplateType.DELIVERY.getName()));
+				dataMap.put("keyword1", new TemplateParam(param.getDeliveryCode()));
+				dataMap.put("keyword2", new TemplateParam(param.getProductItemInfo()));
+				dataMap.put("keyword3", new TemplateParam(param.getDeliveryAddress()));
+				dataMap.put("keyword4", new TemplateParam(param.getOrderNo()));
+				dataMap.put("keyword5", new TemplateParam(param.getDeliveryTime()));
+				dataMap.put("remark", new TemplateParam("备注"));
+				
+				HashMap<String, Object> sendParam = new HashMap<String, Object>();
+				sendParam.put("touser", param.getOpenId());
+				sendParam.put("mp_template_msg", buildParam(template_refunds, param.getPage(), dataMap));
+				ret = sendParam(accessToken, sendParam);
+			}
+		} catch (Exception e) {
+			log.error(messagetype + "推送[" + TemplateType.DELIVERY + "]异常！", e);
+		}
+		return ret;
 	}
 
 	@Override
-	public boolean refund(RefundParam param) {
-		log.error(messagetype + "推送[" + TemplateType.REFUND + "]暂未实现！");
-		return false;
+	public boolean refund(List<RefundParam> params) {
+		boolean ret = false;
+		try {
+			log.info(messagetype + "[" + TemplateType.REFUND + "]消息推送");
+			String accessToken = accessTokenUtil.getToken(weappAppId, appsecret);
+			for (RefundParam param : params) {
+				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
+				dataMap.put("first", new TemplateParam(TemplateType.REFUND.getName()));
+				dataMap.put("keyword1", new TemplateParam(param.getAmount()));
+				dataMap.put("keyword2", new TemplateParam(param.getCause()));
+				dataMap.put("keyword3", new TemplateParam(param.getTime()));
+				dataMap.put("keyword4", new TemplateParam(param.getRefundMode()));
+				dataMap.put("remark", new TemplateParam("备注"));
+				
+				HashMap<String, Object> sendParam = new HashMap<String, Object>();
+				sendParam.put("touser", param.getOpenId());
+				sendParam.put("mp_template_msg", buildParam(template_refunds, param.getPage(), dataMap));
+				ret = sendParam(accessToken, sendParam);
+			}
+		} catch (Exception e) {
+			log.error(messagetype + "推送[" + TemplateType.REFUND + "]异常！", e);
+		}
+		return ret;
 	}
 
 	@Override
-	public boolean campaignSuccess(CampaignSuccessParam param) {
+	public boolean campaignSuccess(List<CampaignSuccessParam> params) {
 		log.error(messagetype + "推送[" + TemplateType.CAMPAIGN_SUCCESS + "]暂未实现！");
 		return false;
 	}
 
 	@Override
-	public boolean closeOrder(CloseOrderParam param) {
+	public boolean closeOrder(List<CloseOrderParam> params) {
+		boolean ret = false;
 		try {
 			log.info(messagetype + "[" + TemplateType.CLOSE_ORDER + "]消息推送");
-			// 获取 access_token
 			String accessToken = accessTokenUtil.getToken(weappAppId, appsecret);
-
-			// 发送模板消息
-			String sendMessageUrl = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send?access_token=" + accessToken;
-			HashMap<String, Object> sendParam = new HashMap<String, Object>();
-			sendParam.put("touser", param.getOpenId());
-			HashMap<String, Object> mpParam = new HashMap<String, Object>();
-			sendParam.put("mp_template_msg", mpParam);
-
-			mpParam.put("template_id", template_delivery);
-			mpParam.put("appid", mpAppId);
-			mpParam.put("url", "http://weixin.qq.com/download");
-			JSONObject miniprogram = new JSONObject();
-			miniprogram.put("appid", weappAppId);
-			miniprogram.put("path", "pages/welcome/welcome");
-			mpParam.put("miniprogram", miniprogram);
-			Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
-			dataMap.put("first", new TemplateParam(TemplateType.CLOSE_ORDER.getName()));
-			dataMap.put("keyword1", new TemplateParam(param.getProductName()));
-			dataMap.put("keyword2", new TemplateParam(param.getOrderNo()));
-			dataMap.put("keyword3", new TemplateParam(param.getCreateOrderTime()));
-			dataMap.put("keyword4", new TemplateParam(param.getAmount()));
-			dataMap.put("keyword5", new TemplateParam(param.getCloseOrderTime()));
-			dataMap.put("remark", new TemplateParam("备注"));
-			mpParam.put("data", dataMap);
-			log.info("发送消息请求参数>" + JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect));
-			// prepay_id
-			Response sendResponse = OkHttpUtils.postString()
-					.content(JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect)).url(sendMessageUrl).build()
-					.connTimeOut(1000L * 60L * 60L * 3).readTimeOut(1000L * 60L * 60L * 3).writeTimeOut(1000L * 60L * 60L * 3).execute();
-			String sendResponseString = sendResponse.body().string();
-			log.info("Response" + sendResponseString);
-			return true;
+			for (CloseOrderParam param : params) {
+				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
+				dataMap.put("first", new TemplateParam(TemplateType.CLOSE_ORDER.getName()));
+				dataMap.put("keyword1", new TemplateParam(param.getProductName()));
+				dataMap.put("keyword2", new TemplateParam(param.getOrderNo()));
+				dataMap.put("keyword3", new TemplateParam(param.getCreateOrderTime()));
+				dataMap.put("keyword4", new TemplateParam(param.getAmount()));
+				dataMap.put("keyword5", new TemplateParam(param.getCloseOrderTime()));
+				dataMap.put("remark", new TemplateParam("备注"));
+				
+				HashMap<String, Object> sendParam = new HashMap<String, Object>();
+				sendParam.put("touser", param.getOpenId());
+				sendParam.put("mp_template_msg", buildParam(template_closeOrder, param.getPage(), dataMap));
+				ret = sendParam(accessToken, sendParam);
+			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.CLOSE_ORDER + "]异常！", e);
 		}
-		return false;
+		return ret;
 	}
 
 	@Override
-	public boolean campaignFailure(CampaignFailureParam param) {
+	public boolean campaignFailure(List<CampaignFailureParam> params) {
 		log.error(messagetype + "推送[" + TemplateType.CAMPAIGN_FAILURE + "]暂未实现！");
 		return false;
 	}
 
 	@Override
-	public boolean deliverySuccess(DeliverySuccessParam param) {
+	public boolean deliverySuccess(List<DeliverySuccessParam> params) {
+		boolean ret = false;
 		try {
 			log.info(messagetype + "[" + TemplateType.DELIVERY_SUCCESS + "]消息推送");
-			// 获取 access_token
 			String accessToken = accessTokenUtil.getToken(weappAppId, appsecret);
 
-			// 发送模板消息
-			String sendMessageUrl = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send?access_token=" + accessToken;
-			HashMap<String, Object> sendParam = new HashMap<String, Object>();
-			sendParam.put("touser", param.getOpenId());
-			HashMap<String, Object> mpParam = new HashMap<String, Object>();
-			sendParam.put("mp_template_msg", mpParam);
-
-			mpParam.put("template_id", template_delivery);
-			mpParam.put("appid", mpAppId);
-			mpParam.put("url", "http://weixin.qq.com/download");
-			JSONObject miniprogram = new JSONObject();
-			miniprogram.put("appid", weappAppId);
-			miniprogram.put("path", "pages/welcome/welcome");
-			mpParam.put("miniprogram", miniprogram);
-			Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
-			dataMap.put("first", new TemplateParam(TemplateType.DELIVERY_SUCCESS.getName()));
-			dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
-			dataMap.put("keyword2", new TemplateParam(param.getDeliveryTime()));
-			dataMap.put("remark", new TemplateParam("备注"));
-			mpParam.put("data", dataMap);
-			log.info("发送消息请求参数>" + JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect));
-			// prepay_id
-			Response sendResponse = OkHttpUtils.postString()
-					.content(JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect)).url(sendMessageUrl).build()
-					.connTimeOut(1000L * 60L * 60L * 3).readTimeOut(1000L * 60L * 60L * 3).writeTimeOut(1000L * 60L * 60L * 3).execute();
-			String sendResponseString = sendResponse.body().string();
-			log.info("Response" + sendResponseString);
-			return true;
+			for (DeliverySuccessParam param : params) {
+				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
+				dataMap.put("first", new TemplateParam(TemplateType.DELIVERY_SUCCESS.getName()));
+				dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
+				dataMap.put("keyword2", new TemplateParam(param.getDeliveryTime()));
+				dataMap.put("remark", new TemplateParam("备注"));
+				
+				HashMap<String, Object> sendParam = new HashMap<String, Object>();
+				sendParam.put("touser", param.getOpenId());
+				sendParam.put("mp_template_msg", buildParam(template_deliverySuccess, param.getPage(), dataMap));
+				ret = sendParam(accessToken, sendParam);
+			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.DELIVERY_SUCCESS + "]异常！", e);
 		}
-		return false;
+		return ret;
 	}
 
 	@Override
-	public boolean orderPaySuccess(OrderPaySuccessParam param) {
+	public boolean orderPaySuccess(List<OrderPaySuccessParam> params) {
+		boolean ret = false;
 		try {
 			log.info(messagetype + "[" + TemplateType.PAY_SUCCESS + "]消息推送");
-			// 获取 access_token
 			String accessToken = accessTokenUtil.getToken(weappAppId, appsecret);
 
-			// 发送模板消息
-			String sendMessageUrl = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send?access_token=" + accessToken;
-			HashMap<String, Object> sendParam = new HashMap<String, Object>();
-			sendParam.put("touser", param.getOpenId());
-			HashMap<String, Object> mpParam = new HashMap<String, Object>();
-			sendParam.put("mp_template_msg", mpParam);
-
-			mpParam.put("template_id", template_delivery);
-			mpParam.put("appid", mpAppId);
-			mpParam.put("url", "http://weixin.qq.com/download");
-			JSONObject miniprogram = new JSONObject();
-			miniprogram.put("appid", weappAppId);
-			miniprogram.put("path", "pages/welcome/welcome");
-			mpParam.put("miniprogram", miniprogram);
-			Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
-			dataMap.put("first", new TemplateParam(TemplateType.DELIVERY_SUCCESS.getName()));
-			dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
-			dataMap.put("keyword2", new TemplateParam(param.getAmount()));
-			dataMap.put("remark", new TemplateParam("备注"));
-			mpParam.put("data", dataMap);
-			log.info("发送消息请求参数>" + JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect));
-			// prepay_id
-			Response sendResponse = OkHttpUtils.postString()
-					.content(JSONObject.toJSONString(sendParam, SerializerFeature.DisableCircularReferenceDetect)).url(sendMessageUrl).build()
-					.connTimeOut(1000L * 60L * 60L * 3).readTimeOut(1000L * 60L * 60L * 3).writeTimeOut(1000L * 60L * 60L * 3).execute();
-			String sendResponseString = sendResponse.body().string();
-			log.info("Response" + sendResponseString);
-			return true;
+			for (OrderPaySuccessParam param : params) {
+				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
+				dataMap.put("first", new TemplateParam(TemplateType.PAY_SUCCESS.getName()));
+				dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
+				dataMap.put("keyword2", new TemplateParam(param.getAmount()));
+				dataMap.put("remark", new TemplateParam("备注"));
+				
+				HashMap<String, Object> sendParam = new HashMap<String, Object>();
+				sendParam.put("touser", param.getOpenId());
+				sendParam.put("mp_template_msg", buildParam(template_orderPaySuccess, param.getPage(), dataMap));
+				ret = sendParam(accessToken, sendParam);
+			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.PAY_SUCCESS + "]异常！", e);
 		}
-		return false;
+		return ret;
 	}
 
 	@Override
-	public boolean goodsWarning(GoodsWarningParam param) {
-		log.info(messagetype+"推送["+TemplateType.GOODS_WARNING+"]暂未实现！");
+	public boolean goodsWarning(List<GoodsWarningParam> params) {
+		log.info(messagetype + "推送[" + TemplateType.GOODS_WARNING + "]暂未实现！");
 		return false;
 	}
 
+	/**
+	 * 构造参数 <br>
+	 * <i> 按小程序和公众号统一的服务消息接口参数格式构造
+	 * 
+	 * @param templateId
+	 * @param page
+	 *            点击时需要跳转的页面
+	 * @param data
+	 *            模板中的参数(keyword1,keyworkd2...)
+	 * @return
+	 */
+	public HashMap<String, Object> buildParam(String templateId, String page, Map<String, TemplateParam> data) {
+		HashMap<String, Object> mpParam = new HashMap<String, Object>();
+		mpParam.put("template_id", template_delivery);
+		mpParam.put("appid", mpAppId);
+		mpParam.put("url", "http://weixin.qq.com/download");
+		mpParam.put("data", data);
+
+		JSONObject miniprogram = new JSONObject();
+		miniprogram.put("appid", weappAppId);
+		miniprogram.put("path", page);
+		mpParam.put("miniprogram", miniprogram);
+		return mpParam;
+	}
+
+	/**
+	 * 向小程序和公众号统一的服务消息接口推送消息 <br>
+	 * <i>API地址：https://developers.weixin.qq.com/miniprogram/dev/api/open-api/uniform-message/sendUniformMessage.html
+	 * 
+	 * @param accessToken
+	 *            每次请求的token
+	 * @param data
+	 *            统一服务消息接口参数
+	 * @return
+	 */
+	private boolean sendParam(String accessToken, HashMap<String, Object> data) {
+		// 发送模板消息
+		String sendMessageUrl = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send?access_token=" + accessToken;
+		String jsonData = JSONObject.toJSONString(data, SerializerFeature.DisableCircularReferenceDetect);
+		log.info(messagetype+"requestData>" + jsonData);
+		Response sendResponse;
+		try {
+			sendResponse = OkHttpUtils.postString().content(jsonData).url(sendMessageUrl).build().connTimeOut(1000L * 60L * 60L * 3)
+					.readTimeOut(1000L * 60L * 60L * 3).writeTimeOut(1000L * 60L * 60L * 3).execute();
+			String sendResponseString = sendResponse.body().string();
+			log.info(messagetype+"response>" + sendResponseString);
+			if (StringUtils.isNotBlank(sendResponseString)) {
+				int errorCode = JSONObject.parseObject(sendResponseString).getIntValue("errcode");
+				if (errorCode == 0) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		} catch (Exception e) {
+			log.error("小程序推送异常!", e);
+		}
+		return false;
+	}
 }

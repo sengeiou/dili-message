@@ -162,7 +162,7 @@ public class WeappController {
 		try {
 			LOG.info("小程序模板消息发送formId = " + jsonBody);
 			String formId=JSONObject.parseObject(jsonBody).getString("formId");
-			goodsWarning(formId);
+			sendDelivery(formId);
 			return "sucess";
 		} catch (Exception e) {
 			LOG.error("小程序登录异常！", e);
@@ -183,13 +183,13 @@ public class WeappController {
 		param.setDeliveryAddress("人民大道东6号");
 		param.setDeliveryCode("665752");
 		param.setDeliveryTime("2018.11.13下午14：30");
-		param.setFromId(formId);
+		param.setFormOrPayId(formId);
 		param.setMobile("18981883712");
 		param.setOpenId("oK0VK5Ef3lcQMkbfxEc5LD1dBEQk");
 		param.setOrderNo("XX36045872");
 		param.setProductItemInfo("鱼、人参、苹果");
 		param.setShopName("天安门一号店");
-		messageService.delivery(param, MessageType.WEAPP,MessageType.MP);
+		messageService.delivery(param, MessageType.WEAPP,MessageType.MP,MessageType.SMS);
 	}
 //	/**
 //	 * 同时推送小程序和公众号

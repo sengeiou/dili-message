@@ -11,10 +11,10 @@ public class BaseParam {
 	private String mobile;
 	/** 公众号或小程序必填 */
 	private String openId;
-	/** 表单号(小程序必填) */
-	private String formId;
-	/** 支付号(小程序必填) */
-	private String payId;
+	/** 表单号或支付号(小程序必填) */
+	private String formOrPayId;
+	/** 小程序或公众号要跳转的路径 */
+	private String page;
 
 	/** 手机号(短信必填) */
 	public String getMobile() {
@@ -36,24 +36,24 @@ public class BaseParam {
 		this.openId = openId;
 	}
 
-	/** 表单号(小程序必填) */
-	public String getFormId() {
-		return formId;
+	/** 表单号或支付号(小程序必填) */
+	public String getFormOrPayId() {
+		return formOrPayId;
 	}
 
-	/** 表单号(小程序必填) */
-	public void setFormId(String formId) {
-		this.formId = formId;
+	/** 表单号或支付号(小程序必填) */
+	public void setFormOrPayId(String formOrPayId) {
+		this.formOrPayId = formOrPayId;
 	}
 
-	/** 支付号(小程序必填) */
-	public String getPayId() {
-		return payId;
+	/** 小程序或公众号要跳转的路径 */
+	public String getPage() {
+		return page;
 	}
 
-	/** 支付号(小程序必填) */
-	public void setPayId(String payId) {
-		this.payId = payId;
+	/** 小程序或公众号要跳转的路径 */
+	public void setPage(String page) {
+		this.page = page;
 	}
 
 }
