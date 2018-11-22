@@ -1,6 +1,5 @@
 package com.dili.message.sdk.service.weapp;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,11 +11,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.dili.http.okhttp.OkHttpUtils;
 import com.dili.message.sdk.common.AccessTokenUtil;
 import com.dili.message.sdk.common.TemplateParam;
+import com.dili.message.sdk.constants.UrlConstants;
 import com.dili.message.sdk.domain.CampaignFailureParam;
 import com.dili.message.sdk.domain.CampaignSuccessParam;
 import com.dili.message.sdk.domain.CloseOrderParam;
@@ -32,7 +33,7 @@ import okhttp3.Response;
 
 /**
  * @description： 小程序消息推送实现
- * 
+ * <br><i>keywaord类变量名由小程序模板定义，其它变量名由推送消息接口定义
  * @author ：WangBo
  * @time ：2018年11月9日上午10:50:06
  */
@@ -40,6 +41,7 @@ import okhttp3.Response;
 public class WeappImpl implements IMessageService {
 	Logger log = LoggerFactory.getLogger(WeappImpl.class);
 	private static String messagetype = "小程序";
+	
 	@Value("${weapp.appId}")
 	public String appId;
 	@Value("${weapp.appsecret}")
@@ -289,7 +291,7 @@ public class WeappImpl implements IMessageService {
 	 */
 	private boolean sendParam(String accessToken, HashMap<String, Object> data) {
 		// 发送模板消息
-		String sendMessageUrl = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send?access_token=" + accessToken;
+		String sendMessageUrl = UrlConstants.SEND_UNIFORM_MESSAGE + accessToken;
 		String jsonData = JSONObject.toJSONString(data, SerializerFeature.DisableCircularReferenceDetect);
 		log.info(messagetype+"requestData>" + jsonData);
 		Response sendResponse;

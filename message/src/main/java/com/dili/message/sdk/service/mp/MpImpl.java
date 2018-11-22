@@ -17,6 +17,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.dili.http.okhttp.OkHttpUtils;
 import com.dili.message.sdk.common.AccessTokenUtil;
 import com.dili.message.sdk.common.TemplateParam;
+import com.dili.message.sdk.constants.UrlConstants;
 import com.dili.message.sdk.domain.CampaignFailureParam;
 import com.dili.message.sdk.domain.CampaignSuccessParam;
 import com.dili.message.sdk.domain.CloseOrderParam;
@@ -31,7 +32,8 @@ import com.dili.message.sdk.type.TemplateType;
 import okhttp3.Response;
 
 /**
- * @description： 公众号消息推送实现发送
+ * @description： 公众号消息推送实现发送 <br>
+ * <i>keywaord类变量名由公众号模板定义，其它变量名由推送消息接口定义
  * 
  * @author ：WangBo
  * @time ：2018年11月9日上午10:50:06
@@ -51,9 +53,6 @@ public class MpImpl implements IMessageService {
 	public String weappAppId;
 	@Value("${mp.appsecret}")
 	public String appsecret;
-	// public static String
-	// uniformMessageUrl="https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send?access_token="
-	// + accessToken;
 	/**
 	 * 支持的模板
 	 */
@@ -87,7 +86,7 @@ public class MpImpl implements IMessageService {
 				dataMap.put("keyword4", new TemplateParam(param.getOrderNo()));
 				dataMap.put("keyword5", new TemplateParam(param.getDeliveryTime()));
 				dataMap.put("remark", new TemplateParam("备注"));
-				
+
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("mp_template_msg", buildParam(template_refunds, param.getPage(), dataMap));
@@ -113,7 +112,7 @@ public class MpImpl implements IMessageService {
 				dataMap.put("keyword3", new TemplateParam(param.getTime()));
 				dataMap.put("keyword4", new TemplateParam(param.getRefundMode()));
 				dataMap.put("remark", new TemplateParam("备注"));
-				
+
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("mp_template_msg", buildParam(template_refunds, param.getPage(), dataMap));
@@ -146,7 +145,7 @@ public class MpImpl implements IMessageService {
 				dataMap.put("keyword4", new TemplateParam(param.getAmount()));
 				dataMap.put("keyword5", new TemplateParam(param.getCloseOrderTime()));
 				dataMap.put("remark", new TemplateParam("备注"));
-				
+
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("mp_template_msg", buildParam(template_closeOrder, param.getPage(), dataMap));
@@ -177,7 +176,7 @@ public class MpImpl implements IMessageService {
 				dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
 				dataMap.put("keyword2", new TemplateParam(param.getDeliveryTime()));
 				dataMap.put("remark", new TemplateParam("备注"));
-				
+
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("mp_template_msg", buildParam(template_deliverySuccess, param.getPage(), dataMap));
@@ -202,7 +201,7 @@ public class MpImpl implements IMessageService {
 				dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
 				dataMap.put("keyword2", new TemplateParam(param.getAmount()));
 				dataMap.put("remark", new TemplateParam("备注"));
-				
+
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("mp_template_msg", buildParam(template_orderPaySuccess, param.getPage(), dataMap));
@@ -257,15 +256,15 @@ public class MpImpl implements IMessageService {
 	 */
 	private boolean sendParam(String accessToken, HashMap<String, Object> data) {
 		// 发送模板消息
-		String sendMessageUrl = "https://api.weixin.qq.com/cgi-bin/message/wxopen/template/uniform_send?access_token=" + accessToken;
+		String sendMessageUrl = UrlConstants.SEND_UNIFORM_MESSAGE + accessToken;
 		String jsonData = JSONObject.toJSONString(data, SerializerFeature.DisableCircularReferenceDetect);
-		log.info(messagetype+"requestData>" + jsonData);
+		log.info(messagetype + "requestData>" + jsonData);
 		Response sendResponse;
 		try {
 			sendResponse = OkHttpUtils.postString().content(jsonData).url(sendMessageUrl).build().connTimeOut(1000L * 60L * 60L * 3)
 					.readTimeOut(1000L * 60L * 60L * 3).writeTimeOut(1000L * 60L * 60L * 3).execute();
 			String sendResponseString = sendResponse.body().string();
-			log.info(messagetype+"response>" + sendResponseString);
+			log.info(messagetype + "response>" + sendResponseString);
 			if (StringUtils.isNotBlank(sendResponseString)) {
 				int errorCode = JSONObject.parseObject(sendResponseString).getIntValue("errcode");
 				if (errorCode == 0) {

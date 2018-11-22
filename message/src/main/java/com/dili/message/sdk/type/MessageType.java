@@ -9,8 +9,10 @@ package com.dili.message.sdk.type;
 public enum MessageType {
 	/** 短信 */
 	SMS(1, "短信"),
+	
 	/** 公众号 */
 	MP(2, "公众号"),
+	
 	/** 小程序 */
 	WEAPP(3, "小程序");
 

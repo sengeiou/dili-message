@@ -10,6 +10,9 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -45,8 +48,10 @@ public class MessageService {
 	@Resource
 	MpImpl mpImpl;
 
+	Logger log=LoggerFactory.getLogger(MessageService.class);
 	@PostConstruct
 	private void init() {
+		//初始化消息推送线程池
 		int processors = Runtime.getRuntime().availableProcessors();
 		pool = new ThreadPoolExecutor(processors, 100, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
 	}
@@ -181,17 +186,24 @@ public class MessageService {
 		executeWork(JSONObject.toJSONString(param), TemplateType.GOODS_WARNING, type);
 	}
 
+	/**
+	 * 异步推送消息
+	 * @param paramJsonStr  消息模板参数
+	 * @param templateType  消息类型
+	 * @param type          推送方式
+	 */
 	private void executeWork(String paramJsonStr, TemplateType templateType, MessageType... type) {
+		if(StringUtils.isBlank(paramJsonStr)||"[null]".equals(paramJsonStr)) {
+			log.error("["+templateType.getName()+"]推送失败，参数为null");
+			return;
+		}
 		for (MessageType messageType : type) {
 			if (messageType == MessageType.SMS) {
-				SendMessageWork sendWork = new SendMessageWork(paramJsonStr, templateType, alidayuSmsImpl);
-				pool.execute(sendWork);
+				pool.execute(new SendMessageWork(paramJsonStr, templateType, alidayuSmsImpl));
 			} else if (messageType == MessageType.WEAPP) {
-				SendMessageWork sendWork = new SendMessageWork(paramJsonStr, templateType, weappImpl);
-				pool.execute(sendWork);
+				pool.execute(new SendMessageWork(paramJsonStr, templateType, weappImpl));
 			} else if (messageType == MessageType.MP) {
-				SendMessageWork sendWork = new SendMessageWork(paramJsonStr, templateType, mpImpl);
-				pool.execute(sendWork);
+				pool.execute(new SendMessageWork(paramJsonStr, templateType, mpImpl));
 			}
 		}
 	}

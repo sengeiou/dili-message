@@ -1,6 +1,7 @@
 package com.dili.message.sdk.domain;
 
 /**
+ * 消息推送-订单支付成功参数
  * @author ：WangBo
  * @time ：2018年11月9日下午4:06:11
  */

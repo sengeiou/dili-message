@@ -1,17 +1,12 @@
 package com.dili.message.sdk.domain;
 
 /**
+ * @description： 消息推送-开团成功提醒参数（包括短信、公众号、小程序）
  * 
  * @author ：WangBo
- * @time ：2018年11月9日下午3:53:35
+ * @time ：2018年11月9日下午3:54:39
  */
-/**
- * @description：
- *               消息推送-开团成功提醒参数
- * @author     ：WangBo
- * @time       ：2018年11月9日下午3:54:39
- */
-public class CampaignSuccessParam extends BaseParam{
+public class CampaignSuccessParam extends BaseParam {
 	/** 开团时间 */
 	private String campaignTimeStart;
 	/** 截至时间 */

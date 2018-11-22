@@ -2,7 +2,7 @@ package com.dili.message.sdk.domain;
 
 /**
  * @description：
- * 			消息推送-取货参数
+ * 			消息推送-取货参数（包括短信、公众号、小程序）
  * @author ：WangBo
  * @time ：2018年11月9日下午3:49:39
  */

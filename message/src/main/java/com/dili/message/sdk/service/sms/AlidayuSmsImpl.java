@@ -30,7 +30,7 @@ import com.dili.message.sdk.type.TemplateType;
 
 /**
  * @description： 阿里大鱼短信发送
- * 
+ * <br><i>变量名由阿里大鱼模板定义
  * @author ：WangBo
  * @time ：2018年11月9日上午10:50:06
  */
@@ -56,6 +56,7 @@ public class AlidayuSmsImpl implements IMessageService {
 	@Value("${alidayu.sms.templateid.goodsWarning}")
 	public String template_goodsWarning;
 
+	/** 阿里大鱼客户端配置*/
 	private IClientProfile profile = null;
 
 	@PostConstruct
@@ -74,6 +75,7 @@ public class AlidayuSmsImpl implements IMessageService {
 	public boolean delivery(List<DeliveryParam> params) {
 		if (profile == null) {
 			log.error("初始化addEndpoint出错!");
+			return false;
 		}
 		for (DeliveryParam param : params) {
 			try {
@@ -103,6 +105,7 @@ public class AlidayuSmsImpl implements IMessageService {
 	public boolean refund(List<RefundParam> params) {
 		if (profile == null) {
 			log.error("初始化addEndpoint出错!");
+			return false;
 		}
 		for (RefundParam param : params) {
 			try {
@@ -129,6 +132,7 @@ public class AlidayuSmsImpl implements IMessageService {
 	public boolean goodsWarning(List<GoodsWarningParam> params) {
 		if (profile == null) {
 			log.error("初始化addEndpoint出错!");
+			return false;
 		}
 		for (GoodsWarningParam param : params) {
 			try {

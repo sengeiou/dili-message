@@ -1,6 +1,7 @@
 package com.dili.message.sdk.domain;
 
 /**
+ * 消息推送 - 团购失败所需参数（包括短信、公众号、小程序）
  * @author ：WangBo
  * @time ：2018年11月9日下午4:03:17
  */

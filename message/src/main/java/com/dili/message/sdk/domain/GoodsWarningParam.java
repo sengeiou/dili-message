@@ -1,8 +1,8 @@
 package com.dili.message.sdk.domain;
 
 /**
- * @description： 商品可用量告警通知参数
- * 
+ * @description：
+ * 消息推送-商品可用量告警通知参数
  * @author ：WangBo
  * @time ：2018年11月9日下午3:57:48
  */

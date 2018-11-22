@@ -1,7 +1,7 @@
 package com.dili.message.sdk.domain;
 
 /**
- * @description： 退款通知
+ * @description： 消息推送-退款通知
  * 
  * @author ：WangBo
  * @time ：2018年11月9日下午3:57:48
