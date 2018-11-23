@@ -59,13 +59,9 @@ public class MpImpl implements IMessageService {
 	@Value("${mp.templateid.delivery}")
 	public String template_delivery;
 	@Value("${mp.templateid.refund}")
-	public String template_refunds;
-	@Value("${mp.templateid.campaignSuccess}")
-	public String template_campaignSuccess;
+	public String template_refund;
 	@Value("${mp.templateid.closeOrder}")
 	public String template_closeOrder;
-	@Value("${mp.templateid.campaignFailure}")
-	public String template_campaignFailure;
 	@Value("${mp.templateid.deliverySuccess}")
 	public String template_deliverySuccess;
 	@Value("${mp.templateid.orderPaySuccess}")
@@ -89,7 +85,7 @@ public class MpImpl implements IMessageService {
 
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
-				sendParam.put("mp_template_msg", buildParam(template_refunds, param.getPage(), dataMap));
+				sendParam.put("mp_template_msg", buildParam(template_refund, param.getPage(), dataMap));
 				ret = sendParam(accessToken, sendParam);
 			}
 		} catch (Exception e) {
@@ -115,7 +111,7 @@ public class MpImpl implements IMessageService {
 
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
-				sendParam.put("mp_template_msg", buildParam(template_refunds, param.getPage(), dataMap));
+				sendParam.put("mp_template_msg", buildParam(template_refund, param.getPage(), dataMap));
 				ret = sendParam(accessToken, sendParam);
 			}
 		} catch (Exception e) {
