@@ -32,8 +32,9 @@ import com.dili.message.sdk.type.TemplateType;
 import okhttp3.Response;
 
 /**
- * @description： 小程序消息推送实现
- * <br><i>keywaord类变量名由小程序模板定义，其它变量名由推送消息接口定义
+ * @description： 小程序消息推送实现 <br>
+ * <i>keywaord类变量名由小程序模板定义，其它变量名由推送消息接口定义
+ * 
  * @author ：WangBo
  * @time ：2018年11月9日上午10:50:06
  */
@@ -41,7 +42,7 @@ import okhttp3.Response;
 public class WeappImpl implements IMessageService {
 	Logger log = LoggerFactory.getLogger(WeappImpl.class);
 	private static String messagetype = "小程序";
-	
+
 	@Value("${weapp.appId}")
 	public String appId;
 	@Value("${weapp.appsecret}")
@@ -53,7 +54,7 @@ public class WeappImpl implements IMessageService {
 	@Value("${weapp.templateid.delivery}")
 	public String template_delivery;
 	@Value("${weapp.templateid.refund}")
-	public String template_refunds;
+	public String template_refund;
 	@Value("${weapp.templateid.campaignSuccess}")
 	public String template_campaignSuccess;
 	@Value("${weapp.templateid.closeOrder}")
@@ -69,7 +70,6 @@ public class WeappImpl implements IMessageService {
 
 	@Override
 	public boolean delivery(List<DeliveryParam> params) {
-		log.info(messagetype + "推送[" + TemplateType.DELIVERY + "].");
 		boolean ret = false;
 		try {
 			String accessToken = accessTokenUtil.getToken(appId, appsecret);
@@ -86,7 +86,7 @@ public class WeappImpl implements IMessageService {
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("weapp_template_msg", weappParam);
-				ret = sendParam(accessToken, sendParam);
+				ret = sendParam(accessToken, sendParam,TemplateType.DELIVERY);
 			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.DELIVERY + "]异常！", e);
@@ -96,7 +96,6 @@ public class WeappImpl implements IMessageService {
 
 	@Override
 	public boolean refund(List<RefundParam> params) {
-		log.info(messagetype + "推送[" + TemplateType.REFUND + "].");
 		boolean ret = false;
 		try {
 			String accessToken = accessTokenUtil.getToken(appId, appsecret);
@@ -108,12 +107,12 @@ public class WeappImpl implements IMessageService {
 				dataMap.put("keyword4", new TemplateParam(param.getRefundMode()));
 				dataMap.put("keyword5", new TemplateParam(param.getOrderNo()));
 				dataMap.put("keyword6", new TemplateParam(param.getRemark()));
-				HashMap<String, Object> weappParam = buildParam(template_refunds, param.getPage(), param.getFormOrPayId(), dataMap);
+				HashMap<String, Object> weappParam = buildParam(template_refund, param.getPage(), param.getFormOrPayId(), dataMap);
 
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("weapp_template_msg", weappParam);
-				ret = sendParam(accessToken, sendParam);
+				ret = sendParam(accessToken, sendParam,TemplateType.REFUND);
 			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.REFUND + "]异常！", e);
@@ -123,7 +122,6 @@ public class WeappImpl implements IMessageService {
 
 	@Override
 	public boolean campaignSuccess(List<CampaignSuccessParam> params) {
-		log.info(messagetype + "推送[" + TemplateType.CAMPAIGN_SUCCESS + "].");
 		boolean ret = false;
 		try {
 			String accessToken = accessTokenUtil.getToken(appId, appsecret);
@@ -138,7 +136,7 @@ public class WeappImpl implements IMessageService {
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("weapp_template_msg", weappParam);
-				ret = sendParam(accessToken, sendParam);
+				ret = sendParam(accessToken, sendParam,TemplateType.CAMPAIGN_SUCCESS);
 			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.CAMPAIGN_SUCCESS + "]异常！", e);
@@ -148,7 +146,6 @@ public class WeappImpl implements IMessageService {
 
 	@Override
 	public boolean closeOrder(List<CloseOrderParam> params) {
-		log.info(messagetype + "推送[" + TemplateType.CLOSE_ORDER + "].");
 		boolean ret = false;
 		try {
 			String accessToken = accessTokenUtil.getToken(appId, appsecret);
@@ -164,7 +161,7 @@ public class WeappImpl implements IMessageService {
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("weapp_template_msg", weappParam);
-				ret = sendParam(accessToken, sendParam);
+				ret = sendParam(accessToken, sendParam,TemplateType.CLOSE_ORDER);
 			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.CLOSE_ORDER + "]异常！", e);
@@ -174,7 +171,6 @@ public class WeappImpl implements IMessageService {
 
 	@Override
 	public boolean campaignFailure(List<CampaignFailureParam> params) {
-		log.info(messagetype + "推送[" + TemplateType.CAMPAIGN_FAILURE + "].");
 		boolean ret = false;
 		try {
 			String accessToken = accessTokenUtil.getToken(appId, appsecret);
@@ -191,7 +187,7 @@ public class WeappImpl implements IMessageService {
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("weapp_template_msg", weappParam);
-				ret = sendParam(accessToken, sendParam);
+				ret = sendParam(accessToken, sendParam,TemplateType.CAMPAIGN_FAILURE);
 			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.CAMPAIGN_FAILURE + "]异常！", e);
@@ -201,7 +197,6 @@ public class WeappImpl implements IMessageService {
 
 	@Override
 	public boolean deliverySuccess(List<DeliverySuccessParam> params) {
-		log.info(messagetype + "推送[" + TemplateType.DELIVERY_SUCCESS + "].");
 		boolean ret = false;
 		try {
 			String accessToken = accessTokenUtil.getToken(appId, appsecret);
@@ -216,7 +211,7 @@ public class WeappImpl implements IMessageService {
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("weapp_template_msg", weappParam);
-				ret = sendParam(accessToken, sendParam);
+				ret = sendParam(accessToken, sendParam,TemplateType.DELIVERY_SUCCESS);
 			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.DELIVERY_SUCCESS + "]异常！", e);
@@ -226,7 +221,6 @@ public class WeappImpl implements IMessageService {
 
 	@Override
 	public boolean orderPaySuccess(List<OrderPaySuccessParam> params) {
-		log.info(messagetype + "推送[" + TemplateType.PAY_SUCCESS + "].");
 		boolean ret = false;
 		try {
 			String accessToken = accessTokenUtil.getToken(appId, appsecret);
@@ -236,12 +230,12 @@ public class WeappImpl implements IMessageService {
 				dataMap.put("keyword2", new TemplateParam(param.getProductName()));
 				dataMap.put("keyword3", new TemplateParam(param.getAmount()));
 				dataMap.put("keyword4", new TemplateParam(param.getCreateOrderTime()));
-				HashMap<String, Object> weappParam = buildParam(template_delivery, param.getPage(), param.getFormOrPayId(), dataMap);
+				HashMap<String, Object> weappParam = buildParam(template_orderPaySuccess, param.getPage(), param.getFormOrPayId(), dataMap);
 
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("weapp_template_msg", weappParam);
-				ret = sendParam(accessToken, sendParam);
+				ret = sendParam(accessToken, sendParam,TemplateType.PAY_SUCCESS);
 			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.PAY_SUCCESS + "]异常！", e);
@@ -288,17 +282,17 @@ public class WeappImpl implements IMessageService {
 	 *            统一服务消息接口参数
 	 * @return
 	 */
-	private boolean sendParam(String accessToken, HashMap<String, Object> data) {
+	private boolean sendParam(String accessToken, HashMap<String, Object> data, TemplateType templateType) {
 		// 发送模板消息
 		String sendMessageUrl = UrlConstants.SEND_UNIFORM_MESSAGE + accessToken;
 		String jsonData = JSONObject.toJSONString(data, SerializerFeature.DisableCircularReferenceDetect);
-		log.info(messagetype+"requestData>" + jsonData);
+		log.info(messagetype + "[" + templateType + "]requestData>" + jsonData);
 		Response sendResponse;
 		try {
 			sendResponse = OkHttpUtils.postString().content(jsonData).url(sendMessageUrl).build().connTimeOut(1000L * 60L * 60L * 3)
 					.readTimeOut(1000L * 60L * 60L * 3).writeTimeOut(1000L * 60L * 60L * 3).execute();
 			String sendResponseString = sendResponse.body().string();
-			log.info(messagetype+"response>" + sendResponseString);
+			log.info(messagetype + "[" + templateType + "]response>" + sendResponseString);
 			if (StringUtils.isNotBlank(sendResponseString)) {
 				int errorCode = JSONObject.parseObject(sendResponseString).getIntValue("errcode");
 				if (errorCode == 0) {
