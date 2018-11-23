@@ -81,7 +81,7 @@ public class MpImpl implements IMessageService {
 				dataMap.put("keyword3", new TemplateParam(param.getDeliveryAddress()));
 				dataMap.put("keyword4", new TemplateParam(param.getOrderNo()));
 				dataMap.put("keyword5", new TemplateParam(param.getDeliveryTime()));
-				dataMap.put("remark", new TemplateParam("备注"));
+				dataMap.put("remark", new TemplateParam(param.getRemark()));
 
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
@@ -107,7 +107,7 @@ public class MpImpl implements IMessageService {
 				dataMap.put("keyword2", new TemplateParam(param.getCause()));
 				dataMap.put("keyword3", new TemplateParam(param.getTime()));
 				dataMap.put("keyword4", new TemplateParam(param.getRefundMode()));
-				dataMap.put("remark", new TemplateParam("备注"));
+				dataMap.put("remark", new TemplateParam(param.getRemark()));
 
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
@@ -140,7 +140,7 @@ public class MpImpl implements IMessageService {
 				dataMap.put("keyword3", new TemplateParam(param.getCreateOrderTime()));
 				dataMap.put("keyword4", new TemplateParam(param.getAmount()));
 				dataMap.put("keyword5", new TemplateParam(param.getCloseOrderTime()));
-				dataMap.put("remark", new TemplateParam("备注"));
+				dataMap.put("remark", new TemplateParam(param.getRemark()));
 
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
@@ -171,7 +171,7 @@ public class MpImpl implements IMessageService {
 				dataMap.put("first", new TemplateParam(TemplateType.DELIVERY_SUCCESS.getName()));
 				dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
 				dataMap.put("keyword2", new TemplateParam(param.getDeliveryTime()));
-				dataMap.put("remark", new TemplateParam("备注"));
+				dataMap.put("remark", new TemplateParam(param.getRemark()));
 
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
@@ -196,7 +196,7 @@ public class MpImpl implements IMessageService {
 				dataMap.put("first", new TemplateParam(TemplateType.PAY_SUCCESS.getName()));
 				dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
 				dataMap.put("keyword2", new TemplateParam(param.getAmount()));
-				dataMap.put("remark", new TemplateParam("备注"));
+				dataMap.put("remark", new TemplateParam(param.getRemark()));
 
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
