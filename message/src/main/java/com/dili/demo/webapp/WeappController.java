@@ -7,6 +7,7 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import com.dili.message.sdk.common.AccessTokenUtil;
 import com.dili.message.sdk.domain.DeliveryParam;
 import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.type.MessageType;
+import com.dili.ss.util.RedisUtil;
 
 import io.swagger.annotations.Api;
 import okhttp3.Response;
@@ -40,6 +42,8 @@ public class WeappController {
 	Logger LOG = LoggerFactory.getLogger(getClass());
 	String appId = "wxd1405e5c40ff05db";
 	String appSecret = "2c34b95ab3a5ff4f77763ba7931dcc4d";
+	@Autowired
+	RedisUtil redisUtil;
 //	String openId = "oK0VK5FPNwYVy_UjdV63hRj67PpY"; // 加林微信
 	//
 	String openId ="oK0VK5Ef3lcQMkbfxEc5LD1dBEQk"; //王波
@@ -162,6 +166,7 @@ public class WeappController {
 		try {
 			LOG.info("小程序模板消息发送formId = " + jsonBody);
 			String formId=JSONObject.parseObject(jsonBody).getString("formId");
+			redisUtil.remove("access_token");
 			sendDelivery(formId);
 			return "sucess";
 		} catch (Exception e) {
@@ -175,7 +180,7 @@ public class WeappController {
 		param.setArea("成都区域");;
 		param.setGoods("苹果");;
 		param.setMobile("18981883712");
-		messageService.goodsWarning(param, MessageType.WEAPP,MessageType.MP,MessageType.SMS);
+		messageService.goodsWarning(param, MessageType.WEAPP,MessageType.MP);
 	}
 	private void sendDelivery(String formId) {
 		DeliveryParam param=new DeliveryParam();
@@ -189,7 +194,7 @@ public class WeappController {
 		param.setOrderNo("XX36045872");
 		param.setProductItemInfo("鱼、人参、苹果");
 		param.setShopName("天安门一号店");
-		messageService.delivery(param, MessageType.WEAPP,MessageType.MP,MessageType.SMS);
+		messageService.delivery(param, MessageType.WEAPP,MessageType.MP);
 	}
 //	/**
 //	 * 同时推送小程序和公众号

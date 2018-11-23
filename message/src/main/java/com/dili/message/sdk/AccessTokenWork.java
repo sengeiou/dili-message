@@ -28,6 +28,7 @@ public class AccessTokenWork implements Runnable {
 	public AccessTokenWork(String appId, String appsecret,RedisUtil redisUtil) {
 		this.appId = appId;
 		this.appsecret = appsecret;
+		this.redisUtil = redisUtil;
 	}
 
 	@Override

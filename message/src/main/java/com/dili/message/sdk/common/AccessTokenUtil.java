@@ -1,7 +1,6 @@
 package com.dili.message.sdk.common;
 
 import java.util.HashMap;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -9,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
@@ -27,11 +28,15 @@ import okhttp3.Response;
  * @time ：2018年11月13日下午5:12:36
  */
 @Component
+@Scope("singleton")
 public class AccessTokenUtil {
 	static Logger log = LoggerFactory.getLogger(AccessTokenUtil.class);
 	@Autowired
 	RedisUtil redisUtil;
-	
+	@Value("${weapp.appId}")
+	public String appId;
+	@Value("${weapp.appsecret}")
+	public String appsecret;
 	/** access_token在redis中的key*/
 	public final static String token_redis_key = "access_token";
 	
@@ -41,9 +46,20 @@ public class AccessTokenUtil {
 	/** 微信token失效时间为7200S */
 	public final static Long expireTime = 7200L;
 	
+	public volatile static  String access_token="";
+	
 	/** 定时获取任务线程池 */
 	ScheduledExecutorService pool; 
 
+	public void initGetTokenWork() {
+		if (pool == null) {
+			log.info("初始化线程池");
+			pool = Executors.newScheduledThreadPool(1);
+			AccessTokenWork work = new AccessTokenWork(appId, appsecret, redisUtil);
+			pool.scheduleWithFixedDelay(work, task_delay, task_delay, TimeUnit.SECONDS);
+		}
+	}
+	
 	/**
 	 * 
 	 * 判断redis是否有缓存的access_token，如果有则直接使用;
@@ -70,11 +86,6 @@ public class AccessTokenUtil {
 				JSONObject tokenObj = JSONObject.parseObject(tokenResponse);
 				accessToken = tokenObj.getString(AccessTokenUtil.token_redis_key);
 				redisUtil.set("access_token", accessToken,AccessTokenUtil.expireTime);
-				if (pool == null) {
-					pool = Executors.newScheduledThreadPool(1);
-					AccessTokenWork work = new AccessTokenWork(appId, appsecret, redisUtil);
-					pool.scheduleWithFixedDelay(work, task_delay, task_delay, TimeUnit.SECONDS);
-				}
 				return accessToken;
 			} else {
 				accessToken = object.toString();

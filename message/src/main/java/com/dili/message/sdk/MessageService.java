@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
+import com.dili.message.sdk.common.AccessTokenUtil;
 import com.dili.message.sdk.domain.CampaignFailureParam;
 import com.dili.message.sdk.domain.CampaignSuccessParam;
 import com.dili.message.sdk.domain.CloseOrderParam;
@@ -47,7 +48,8 @@ public class MessageService {
 	WeappImpl weappImpl;
 	@Resource
 	MpImpl mpImpl;
-
+    @Resource
+    AccessTokenUtil accessTokenUtil;
 	Logger log=LoggerFactory.getLogger(MessageService.class);
 	@PostConstruct
 	private void init() {
@@ -197,6 +199,15 @@ public class MessageService {
 			log.error("["+templateType.getName()+"]推送失败，参数为null");
 			return;
 		}
+		
+		for(MessageType messageType : type) {
+			if (messageType == MessageType.WEAPP || messageType == MessageType.MP) {
+				//初始化获取token线程池
+				accessTokenUtil.initGetTokenWork();
+				break;
+			}
+		}
+		
 		for (MessageType messageType : type) {
 			if (messageType == MessageType.SMS) {
 				pool.execute(new SendMessageWork(paramJsonStr, templateType, alidayuSmsImpl));

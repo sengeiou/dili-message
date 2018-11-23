@@ -78,10 +78,9 @@ public class WeappImpl implements IMessageService {
 				dataMap.put("keyword1", new TemplateParam(param.getDeliveryCode()));
 				dataMap.put("keyword2", new TemplateParam(param.getProductItemInfo()));
 				dataMap.put("keyword3", new TemplateParam(param.getDeliveryAddress()));
-				dataMap.put("keyword4", new TemplateParam(param.getShopName()));
-				dataMap.put("keyword5", new TemplateParam(param.getBusinessHours()));
-				dataMap.put("keyword6", new TemplateParam(param.getOrderNo()));
-				dataMap.put("keyword7", new TemplateParam(param.getDeliveryTime()));
+				dataMap.put("keyword4", new TemplateParam(param.getOrderNo()));
+				dataMap.put("keyword5", new TemplateParam(param.getDeliveryTime()));
+				dataMap.put("keyword6", new TemplateParam(param.getRemark()));
 				HashMap<String, Object> weappParam = buildParam(template_delivery, param.getPage(), param.getFormOrPayId(), dataMap);
 
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();

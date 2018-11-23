@@ -17,8 +17,6 @@ public class RefundParam extends BaseParam {
 	private String cause;
 	/** 退款单号 */
 	private String orderNo;
-	/** 备注 */
-	private String remark;
 
 	/** 退款时间 */
 	public String getTime() {
@@ -58,16 +56,6 @@ public class RefundParam extends BaseParam {
 	/** 退款单号 */
 	public void setOrderNo(String orderNo) {
 		this.orderNo = orderNo;
-	}
-
-	/** 备注 */
-	public String getRemark() {
-		return remark;
-	}
-
-	/** 备注 */
-	public void setRemark(String remark) {
-		this.remark = remark;
 	}
 
 	/** 退款方式 */

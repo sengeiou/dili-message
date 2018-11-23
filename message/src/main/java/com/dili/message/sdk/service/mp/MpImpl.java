@@ -56,19 +56,19 @@ public class MpImpl implements IMessageService {
 	/**
 	 * 支持的模板
 	 */
-	@Value("${weapp.templateid.delivery}")
+	@Value("${mp.templateid.delivery}")
 	public String template_delivery;
-	@Value("${weapp.templateid.refund}")
+	@Value("${mp.templateid.refund}")
 	public String template_refunds;
-	@Value("${weapp.templateid.campaignSuccess}")
+	@Value("${mp.templateid.campaignSuccess}")
 	public String template_campaignSuccess;
-	@Value("${weapp.templateid.closeOrder}")
+	@Value("${mp.templateid.closeOrder}")
 	public String template_closeOrder;
-	@Value("${weapp.templateid.campaignFailure}")
+	@Value("${mp.templateid.campaignFailure}")
 	public String template_campaignFailure;
-	@Value("${weapp.templateid.deliverySuccess}")
+	@Value("${mp.templateid.deliverySuccess}")
 	public String template_deliverySuccess;
-	@Value("${weapp.templateid.orderPaySuccess}")
+	@Value("${mp.templateid.orderPaySuccess}")
 	public String template_orderPaySuccess;
 
 	@Override

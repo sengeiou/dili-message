@@ -15,6 +15,8 @@ public class BaseParam {
 	private String formOrPayId;
 	/** 小程序或公众号要跳转的路径 */
 	private String page;
+	/** 备注 */
+	private String remark;
 
 	/** 手机号(短信必填) */
 	public String getMobile() {
@@ -54,6 +56,16 @@ public class BaseParam {
 	/** 小程序或公众号要跳转的路径 */
 	public void setPage(String page) {
 		this.page = page;
+	}
+
+	/** 备注 */
+	public String getRemark() {
+		return remark;
+	}
+
+	/** 备注 */
+	public void setRemark(String remark) {
+		this.remark = remark;
 	}
 
 }
