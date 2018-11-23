@@ -88,9 +88,9 @@ public class AlidayuSmsImpl implements IMessageService {
 				json.put("Shop", param.getDeliveryAddress());
 				SendSmsRequest request = buildData(template_delivery, param.getMobile(), json.toJSONString());
 
-				log.info(messagetype+"sendSmsRequest>" + JSONObject.toJSONString(request));
+				log.info(messagetype+"推送["+TemplateType.DELIVERY+"]sendSmsRequest>" + JSONObject.toJSONString(request));
 				SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
-				log.info(messagetype+"sendSmsResponse>" + JSONObject.toJSONString(sendSmsResponse));
+				log.info(messagetype+"推送["+TemplateType.DELIVERY+"]sendSmsResponse>" + JSONObject.toJSONString(sendSmsResponse));
 				if (sendSmsResponse != null) {
 					return sendSmsResponse.getCode().equals("OK");
 				}
@@ -114,16 +114,16 @@ public class AlidayuSmsImpl implements IMessageService {
 				JSONObject json = new JSONObject();
 				json.put("order", param.getOrderNo());
 				json.put("amount", param.getAmount());
-				SendSmsRequest request = buildData(template_delivery, param.getMobile(), json.toJSONString());
+				SendSmsRequest request = buildData(template_refund, param.getMobile(), json.toJSONString());
 
-				log.info(messagetype+"sendSmsRequest>" + JSONObject.toJSONString(request));
+				log.info(messagetype+"推送["+TemplateType.REFUND+"]sendSmsRequest>" + JSONObject.toJSONString(request));
 				SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
-				log.info(messagetype+"sendSmsResponse>" + JSONObject.toJSONString(sendSmsResponse));
+				log.info(messagetype+"推送["+TemplateType.REFUND+"]sendSmsResponse>" + JSONObject.toJSONString(sendSmsResponse));
 				if (sendSmsResponse != null) {
 					return sendSmsResponse.getCode().equals("OK");
 				}
 			} catch (Exception e) {
-				log.error("用户[" + param.getMobile() + "]推送[" + TemplateType.DELIVERY + "]消息失败！", e);
+				log.error("用户[" + param.getMobile() + "]推送[" + TemplateType.REFUND + "]消息失败！", e);
 			}
 		}
 		return false;
@@ -142,16 +142,16 @@ public class AlidayuSmsImpl implements IMessageService {
 				json.put("area", param.getArea());
 				json.put("goods", param.getGoods());
 				json.put("amount", param.getAmount());
-				SendSmsRequest request = buildData(template_delivery, param.getMobile(), json.toJSONString());
+				SendSmsRequest request = buildData(template_goodsWarning, param.getMobile(), json.toJSONString());
 
-				log.info(messagetype+"sendSmsRequest>" + JSONObject.toJSONString(request));
+				log.info(messagetype+"推送["+TemplateType.GOODS_WARNING+"]sendSmsRequest>" + JSONObject.toJSONString(request));
 				SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
-				log.info(messagetype+"sendSmsResponse>" + JSONObject.toJSONString(sendSmsResponse));
+				log.info(messagetype+"推送["+TemplateType.GOODS_WARNING+"]sendSmsResponse>" + JSONObject.toJSONString(sendSmsResponse));
 				if (sendSmsResponse != null) {
 					return sendSmsResponse.getCode().equals("OK");
 				}
 			} catch (Exception e) {
-				log.error("用户[" + param.getMobile() + "]推送[" + TemplateType.DELIVERY + "]消息失败！", e);
+				log.error("用户[" + param.getMobile() + "]推送[" + TemplateType.GOODS_WARNING + "]消息失败！", e);
 			}
 		}
 		return false;
