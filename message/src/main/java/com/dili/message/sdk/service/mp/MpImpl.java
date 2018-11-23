@@ -223,7 +223,7 @@ public class MpImpl implements IMessageService {
 	 */
 	public HashMap<String, Object> buildParam(String templateId, String page, Map<String, TemplateParam> data) {
 		HashMap<String, Object> mpParam = new HashMap<String, Object>();
-		mpParam.put("template_id", template_delivery);
+		mpParam.put("template_id", templateId);
 		mpParam.put("appid", mpAppId);
 		mpParam.put("url", "http://weixin.qq.com/download");
 		mpParam.put("data", data);

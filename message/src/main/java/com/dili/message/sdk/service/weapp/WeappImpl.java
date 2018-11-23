@@ -265,7 +265,7 @@ public class WeappImpl implements IMessageService {
 	 */
 	public HashMap<String, Object> buildParam(String templateId, String page, String fromOrPayId, Map<String, TemplateParam> data) {
 		HashMap<String, Object> weappParam = new HashMap<String, Object>();
-		weappParam.put("template_id", template_delivery);
+		weappParam.put("template_id", templateId);
 		weappParam.put("form_id", fromOrPayId);
 		weappParam.put("page", page);
 		weappParam.put("data", data);

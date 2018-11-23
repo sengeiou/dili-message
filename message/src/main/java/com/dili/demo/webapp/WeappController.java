@@ -21,6 +21,7 @@ import com.dili.message.sdk.MessageService;
 import com.dili.message.sdk.common.AccessTokenUtil;
 import com.dili.message.sdk.domain.DeliveryParam;
 import com.dili.message.sdk.domain.GoodsWarningParam;
+import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.type.MessageType;
 import com.dili.ss.util.RedisUtil;
 
@@ -167,7 +168,7 @@ public class WeappController {
 			LOG.info("小程序模板消息发送formId = " + jsonBody);
 			String formId=JSONObject.parseObject(jsonBody).getString("formId");
 			redisUtil.remove("access_token");
-			sendDelivery(formId);
+			orderPaySuccess(formId);
 			return "sucess";
 		} catch (Exception e) {
 			LOG.error("小程序登录异常！", e);
@@ -195,6 +196,17 @@ public class WeappController {
 		param.setProductItemInfo("鱼、人参、苹果");
 		param.setShopName("天安门一号店");
 		messageService.delivery(param, MessageType.WEAPP,MessageType.MP);
+	}
+	private void orderPaySuccess(String formId) {
+		OrderPaySuccessParam param=new OrderPaySuccessParam();
+		param.setFormOrPayId(formId);
+		param.setMobile("18981883712");
+		param.setOpenId("oK0VK5Ef3lcQMkbfxEc5LD1dBEQk");
+		param.setOrderNo("XX36045872");
+		param.setAmount("250元");
+		param.setProductName("苹果");
+		param.setCreateOrderTime("今天下午");
+		messageService.orderPaySuccess(param, MessageType.WEAPP,MessageType.MP);
 	}
 //	/**
 //	 * 同时推送小程序和公众号
