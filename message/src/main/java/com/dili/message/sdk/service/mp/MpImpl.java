@@ -71,7 +71,6 @@ public class MpImpl implements IMessageService {
 	public boolean delivery(List<DeliveryParam> params) {
 		boolean ret = false;
 		try {
-			String accessToken = accessTokenUtil.getToken(weappAppId, appsecret);
 			for (DeliveryParam param : params) {
 				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
 				dataMap.put("first", new TemplateParam(TemplateType.DELIVERY.getName()));
@@ -85,7 +84,7 @@ public class MpImpl implements IMessageService {
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("mp_template_msg", buildParam(template_delivery, param.getPage(), dataMap));
-				ret = sendParam(accessToken, sendParam,TemplateType.DELIVERY);
+				ret = sendParam(sendParam,TemplateType.DELIVERY);
 			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.DELIVERY + "]异常！", e);
@@ -97,7 +96,6 @@ public class MpImpl implements IMessageService {
 	public boolean refund(List<RefundParam> params) {
 		boolean ret = false;
 		try {
-			String accessToken = accessTokenUtil.getToken(weappAppId, appsecret);
 			for (RefundParam param : params) {
 				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
 				dataMap.put("first", new TemplateParam(TemplateType.REFUND.getName()));
@@ -110,7 +108,7 @@ public class MpImpl implements IMessageService {
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("mp_template_msg", buildParam(template_refund, param.getPage(), dataMap));
-				ret = sendParam(accessToken, sendParam,TemplateType.REFUND);
+				ret = sendParam(sendParam,TemplateType.REFUND);
 			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.REFUND + "]异常！", e);
@@ -128,7 +126,6 @@ public class MpImpl implements IMessageService {
 	public boolean closeOrder(List<CloseOrderParam> params) {
 		boolean ret = false;
 		try {
-			String accessToken = accessTokenUtil.getToken(weappAppId, appsecret);
 			for (CloseOrderParam param : params) {
 				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
 				dataMap.put("first", new TemplateParam(TemplateType.CLOSE_ORDER.getName()));
@@ -142,7 +139,7 @@ public class MpImpl implements IMessageService {
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("mp_template_msg", buildParam(template_closeOrder, param.getPage(), dataMap));
-				ret = sendParam(accessToken, sendParam,TemplateType.CLOSE_ORDER);
+				ret = sendParam( sendParam,TemplateType.CLOSE_ORDER);
 			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.CLOSE_ORDER + "]异常！", e);
@@ -160,8 +157,6 @@ public class MpImpl implements IMessageService {
 	public boolean deliverySuccess(List<DeliverySuccessParam> params) {
 		boolean ret = false;
 		try {
-			String accessToken = accessTokenUtil.getToken(weappAppId, appsecret);
-
 			for (DeliverySuccessParam param : params) {
 				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
 				dataMap.put("first", new TemplateParam(TemplateType.DELIVERY_SUCCESS.getName()));
@@ -172,7 +167,7 @@ public class MpImpl implements IMessageService {
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("mp_template_msg", buildParam(template_deliverySuccess, param.getPage(), dataMap));
-				ret = sendParam(accessToken, sendParam,TemplateType.DELIVERY_SUCCESS);
+				ret = sendParam(sendParam,TemplateType.DELIVERY_SUCCESS);
 			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.DELIVERY_SUCCESS + "]异常！", e);
@@ -184,8 +179,6 @@ public class MpImpl implements IMessageService {
 	public boolean orderPaySuccess(List<OrderPaySuccessParam> params) {
 		boolean ret = false;
 		try {
-			String accessToken = accessTokenUtil.getToken(weappAppId, appsecret);
-
 			for (OrderPaySuccessParam param : params) {
 				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
 				dataMap.put("first", new TemplateParam(TemplateType.PAY_SUCCESS.getName()));
@@ -196,7 +189,7 @@ public class MpImpl implements IMessageService {
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("mp_template_msg", buildParam(template_orderPaySuccess, param.getPage(), dataMap));
-				ret = sendParam(accessToken, sendParam,TemplateType.PAY_SUCCESS);
+				ret = sendParam(sendParam,TemplateType.PAY_SUCCESS);
 			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.PAY_SUCCESS + "]异常！", e);
@@ -239,15 +232,13 @@ public class MpImpl implements IMessageService {
 	 * 向小程序和公众号统一的服务消息接口推送消息 <br>
 	 * <i>API地址：https://developers.weixin.qq.com/miniprogram/dev/api/open-api/uniform-message/sendUniformMessage.html
 	 * 
-	 * @param accessToken
-	 *            每次请求的token
 	 * @param data
 	 *            统一服务消息接口参数
 	 * @return
 	 */
-	private boolean sendParam(String accessToken, HashMap<String, Object> data,TemplateType templateType) {
+	private boolean sendParam(HashMap<String, Object> data,TemplateType templateType) {
 		// 发送模板消息
-		String sendMessageUrl = UrlConstants.SEND_UNIFORM_MESSAGE + accessToken;
+		String sendMessageUrl = UrlConstants.SEND_UNIFORM_MESSAGE + accessTokenUtil.getToken();
 		String jsonData = JSONObject.toJSONString(data, SerializerFeature.DisableCircularReferenceDetect);
 		log.info(messagetype+"推送[" +templateType+ "]requestData>" + jsonData);
 		Response sendResponse;

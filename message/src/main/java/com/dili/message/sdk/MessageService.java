@@ -29,6 +29,7 @@ import com.dili.message.sdk.domain.RefundParam;
 import com.dili.message.sdk.service.mp.MpImpl;
 import com.dili.message.sdk.service.sms.AlidayuSmsImpl;
 import com.dili.message.sdk.service.weapp.WeappImpl;
+import com.dili.message.sdk.task.SendMessageWork;
 import com.dili.message.sdk.type.MessageType;
 import com.dili.message.sdk.type.TemplateType;
 
@@ -48,14 +49,19 @@ public class MessageService {
 	WeappImpl weappImpl;
 	@Resource
 	MpImpl mpImpl;
-    @Resource
-    AccessTokenUtil accessTokenUtil;
-	Logger log=LoggerFactory.getLogger(MessageService.class);
+	@Resource
+	AccessTokenUtil accessTokenUtil;
+	Logger log = LoggerFactory.getLogger(MessageService.class);
+
 	@PostConstruct
 	private void init() {
-		//初始化消息推送线程池
-		int processors = Runtime.getRuntime().availableProcessors();
-		pool = new ThreadPoolExecutor(processors, 100, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+		// 初始化消息推送线程池
+		try {
+			int processors = Runtime.getRuntime().availableProcessors();
+			pool = new ThreadPoolExecutor(processors, 100, 60L, TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
+		} catch (Exception e) {
+			log.error("初始化推送线程池出错.", e);
+		}
 	}
 
 	/**
@@ -190,31 +196,36 @@ public class MessageService {
 
 	/**
 	 * 异步推送消息
-	 * @param paramJsonStr  消息模板参数
-	 * @param templateType  消息类型
-	 * @param type          推送方式
+	 * 
+	 * @param paramJsonStr
+	 *            消息模板参数
+	 * @param templateType
+	 *            消息类型
+	 * @param type
+	 *            推送方式
 	 */
 	private void executeWork(String paramJsonStr, TemplateType templateType, MessageType... type) {
-		if(StringUtils.isBlank(paramJsonStr)||"[null]".equals(paramJsonStr)) {
-			log.error("["+templateType.getName()+"]推送失败，参数为null");
+		if (StringUtils.isBlank(paramJsonStr) || "[null]".equals(paramJsonStr)) {
+			log.error("[" + templateType.getName() + "]推送失败，参数为null");
 			return;
 		}
-		
-		for(MessageType messageType : type) {
+
+		for (MessageType messageType : type) {
 			if (messageType == MessageType.WEAPP || messageType == MessageType.MP) {
-				//初始化获取token线程池
+				// 初始化获取token线程池
 				accessTokenUtil.initGetTokenWork();
 				break;
 			}
 		}
-		
-		for (MessageType messageType : type) {
-			if (messageType == MessageType.SMS) {
-				pool.execute(new SendMessageWork(paramJsonStr, templateType, alidayuSmsImpl));
-			} else if (messageType == MessageType.WEAPP) {
-				pool.execute(new SendMessageWork(paramJsonStr, templateType, weappImpl));
-			} else if (messageType == MessageType.MP) {
-				pool.execute(new SendMessageWork(paramJsonStr, templateType, mpImpl));
+		if (pool != null) {
+			for (MessageType messageType : type) {
+				if (messageType == MessageType.SMS) {
+					pool.execute(new SendMessageWork(paramJsonStr, templateType, alidayuSmsImpl));
+				} else if (messageType == MessageType.WEAPP) {
+					pool.execute(new SendMessageWork(paramJsonStr, templateType, weappImpl));
+				} else if (messageType == MessageType.MP) {
+					pool.execute(new SendMessageWork(paramJsonStr, templateType, mpImpl));
+				}
 			}
 		}
 	}

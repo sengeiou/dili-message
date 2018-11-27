@@ -1,4 +1,4 @@
-package com.dili.message.sdk;
+package com.dili.message.sdk.task;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dili.message.sdk.domain.CampaignFailureParam;

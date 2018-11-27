@@ -167,7 +167,7 @@ public class WeappController {
 		try {
 			LOG.info("小程序模板消息发送formId = " + jsonBody);
 			String formId=JSONObject.parseObject(jsonBody).getString("formId");
-			redisUtil.remove("access_token");
+//			redisUtil.remove("access_token");
 			orderPaySuccess(formId);
 			return "sucess";
 		} catch (Exception e) {
