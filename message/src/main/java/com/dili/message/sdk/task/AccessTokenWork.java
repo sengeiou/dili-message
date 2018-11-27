@@ -29,7 +29,7 @@ public class AccessTokenWork implements Runnable {
 		try {
 			log.info("******************");
 			String accessToken = AccessTokenUtil.getNewToken(appId, appsecret);
-			redisUtil.set("access_token", accessToken,AccessTokenUtil.expireTime);
+			redisUtil.set(AccessTokenUtil.token_redis_key, accessToken,AccessTokenUtil.expireTime);
 		} catch (Exception e) {
 			log.error("定时获取access_token出错.",e);
 		}

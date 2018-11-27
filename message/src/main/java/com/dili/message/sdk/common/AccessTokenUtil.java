@@ -57,10 +57,13 @@ public class AccessTokenUtil {
 	 */
 	public void initGetTokenWork() {
 		if (pool == null) {
-			log.info("初始化获取access_token线程池");
-			pool = Executors.newScheduledThreadPool(1);
-			AccessTokenWork work = new AccessTokenWork(appId, appsecret, redisUtil);
-			pool.scheduleWithFixedDelay(work, task_delay, task_delay, TimeUnit.SECONDS);
+			Object object = redisUtil.get(token_redis_key);
+			if (object == null || StringUtils.isBlank(object.toString())) {
+				log.info("初始化获取access_token线程池");
+				pool = Executors.newScheduledThreadPool(1);
+				AccessTokenWork work = new AccessTokenWork(appId, appsecret, redisUtil);
+				pool.scheduleWithFixedDelay(work, task_delay, task_delay, TimeUnit.SECONDS);
+			}
 		}
 	}
 
@@ -79,6 +82,7 @@ public class AccessTokenUtil {
 			if (object == null || StringUtils.isBlank(object.toString())) {
 				initGetTokenWork();
 				accessToken = getNewToken(appId, appsecret);
+				redisUtil.set(AccessTokenUtil.token_redis_key, accessToken,AccessTokenUtil.expireTime);
 				return accessToken;
 			} else {
 				accessToken = object.toString();
