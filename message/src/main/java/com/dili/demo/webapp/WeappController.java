@@ -19,7 +19,9 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.dili.http.okhttp.OkHttpUtils;
 import com.dili.message.sdk.MessageService;
 import com.dili.message.sdk.common.AccessTokenUtil;
+import com.dili.message.sdk.domain.CloseOrderParam;
 import com.dili.message.sdk.domain.DeliveryParam;
+import com.dili.message.sdk.domain.DeliverySuccessParam;
 import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.type.MessageType;
@@ -168,7 +170,7 @@ public class WeappController {
 			LOG.info("小程序模板消息发送formId = " + jsonBody);
 			String formId=JSONObject.parseObject(jsonBody).getString("formId");
 //			redisUtil.remove("access_token");
-			orderPaySuccess(formId);
+			sendDeliverySucess(formId);
 			return "sucess";
 		} catch (Exception e) {
 			LOG.error("小程序登录异常！", e);
@@ -197,6 +199,17 @@ public class WeappController {
 		param.setShopName("天安门一号店");
 		messageService.delivery(param, MessageType.WEAPP,MessageType.MP);
 	}
+	private void sendDeliverySucess(String formId) {
+		DeliverySuccessParam param=new DeliverySuccessParam();
+		param.setProductInfo("鱼、人参、苹果");
+		param.setOrderNo("XX36045872");
+		param.setDeliveryTime("2018.11.13下午14：30");
+		param.setDeliveryShop("天安门一号店");
+		param.setFormOrPayId(formId);
+		param.setMobile("18981883712");
+		param.setOpenId("oK0VK5Ef3lcQMkbfxEc5LD1dBEQk");
+		messageService.deliverySuccess(param, MessageType.WEAPP,MessageType.MP);
+	}
 	private void orderPaySuccess(String formId) {
 		OrderPaySuccessParam param=new OrderPaySuccessParam();
 		param.setFormOrPayId(formId);
@@ -207,6 +220,18 @@ public class WeappController {
 		param.setProductName("苹果");
 		param.setCreateOrderTime("今天下午");
 		messageService.orderPaySuccess(param, MessageType.WEAPP,MessageType.MP);
+	}
+	private void closeOrder(String formId) {
+		CloseOrderParam param=new CloseOrderParam();
+		param.setProductName("苹果");
+		param.setOrderNo("XX36045872");
+		param.setAmount("250元");
+		param.setCreateOrderTime("今天下午");
+		param.setKindlyReminder("价格原因");
+		param.setFormOrPayId(formId);
+		param.setMobile("18981883712");
+		param.setOpenId("oK0VK5Ef3lcQMkbfxEc5LD1dBEQk");
+		messageService.closeOrder(param, MessageType.WEAPP,MessageType.MP);
 	}
 //	/**
 //	 * 同时推送小程序和公众号
