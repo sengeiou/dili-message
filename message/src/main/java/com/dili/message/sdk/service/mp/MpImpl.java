@@ -240,7 +240,7 @@ public class MpImpl implements IMessageService {
 		// 发送模板消息
 		String sendMessageUrl = UrlConstants.SEND_UNIFORM_MESSAGE + accessTokenUtil.getToken();
 		String jsonData = JSONObject.toJSONString(data, SerializerFeature.DisableCircularReferenceDetect);
-		log.info(messagetype+"推送[" +templateType+ "]requestData>" + jsonData);
+		log.info(messagetype + "推送[" + templateType + "]access_token[" + accessTokenUtil.getToken() + "]requestData>" + jsonData);
 		Response sendResponse;
 		try {
 			sendResponse = OkHttpUtils.postString().content(jsonData).url(sendMessageUrl).build().connTimeOut(1000L * 60L * 60L * 3)
