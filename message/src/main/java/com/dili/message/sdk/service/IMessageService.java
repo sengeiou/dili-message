@@ -10,6 +10,7 @@ import com.dili.message.sdk.domain.DeliverySuccessParam;
 import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
+import com.dili.message.sdk.domain.VerificationCodeParam;
 
 /**
  * @description： 消息类型接口
@@ -73,5 +74,14 @@ public interface IMessageService {
 	 * @return 单条数据可以使用，多条数据意义不大
 	 */
 	public boolean goodsWarning(List<GoodsWarningParam> param);
+	
+	/**
+	 * 短信验证码
+	 * 
+	 * @return 单条数据可以使用，多条数据意义不大
+	 */
+	default public boolean verificationCode(List<VerificationCodeParam> param) {
+		return false;
+	}
 
 }

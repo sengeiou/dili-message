@@ -29,7 +29,10 @@ public enum TemplateType {
 	CLOSE_ORDER(7, "订单关闭"),
 
 	/** 订单关闭提醒 */
-	GOODS_WARNING(8, "可用库存告警通知");
+	GOODS_WARNING(8, "可用库存告警通知"),
+	
+	/** 短信验证码 */
+	VERIFICATION_CODE(9, "短信验证码");
 
 	private String name;
 	private int code;

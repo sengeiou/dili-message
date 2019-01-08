@@ -26,6 +26,7 @@ import com.dili.message.sdk.domain.DeliverySuccessParam;
 import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
+import com.dili.message.sdk.domain.VerificationCodeParam;
 import com.dili.message.sdk.service.mp.MpImpl;
 import com.dili.message.sdk.service.sms.AlidayuSmsImpl;
 import com.dili.message.sdk.service.weapp.WeappImpl;
@@ -63,7 +64,14 @@ public class MessageService {
 			log.error("初始化推送线程池出错.", e);
 		}
 	}
-
+	/**
+	 * 短信验证码
+	 */
+	public void verificationCode(VerificationCodeParam param, MessageType... type) {
+		List<VerificationCodeParam> list = new ArrayList<VerificationCodeParam>();
+		list.add(param);
+		executeWork(JSONObject.toJSONString(list), TemplateType.VERIFICATION_CODE, type);
+	}
 	/**
 	 * 取货通知
 	 */
@@ -74,14 +82,6 @@ public class MessageService {
 
 	}
 
-	/**
-	 * 开团成功提醒
-	 */
-	public void campaignSuccess(CampaignSuccessParam param, MessageType... type) {
-		List<CampaignSuccessParam> list = new ArrayList<CampaignSuccessParam>();
-		list.add(param);
-		executeWork(JSONObject.toJSONString(list), TemplateType.CAMPAIGN_SUCCESS, type);
-	}
 
 	/**
 	 * 退款通知
@@ -92,23 +92,6 @@ public class MessageService {
 		executeWork(JSONObject.toJSONString(list), TemplateType.REFUND, type);
 	}
 
-	/**
-	 * 订单关闭提醒
-	 */
-	public void closeOrder(CloseOrderParam param, MessageType... type) {
-		List<CloseOrderParam> list = new ArrayList<CloseOrderParam>();
-		list.add(param);
-		executeWork(JSONObject.toJSONString(list), TemplateType.CLOSE_ORDER, type);
-	}
-
-	/**
-	 * 团购失败通知
-	 */
-	public void campaignFailure(CampaignFailureParam param, MessageType... type) {
-		List<CampaignFailureParam> list = new ArrayList<CampaignFailureParam>();
-		list.add(param);
-		executeWork(JSONObject.toJSONString(list), TemplateType.CAMPAIGN_FAILURE, type);
-	}
 
 	/**
 	 * 取货成功
@@ -146,32 +129,12 @@ public class MessageService {
 	}
 
 	/**
-	 * 开团成功提醒
-	 */
-	public void campaignSuccess(List<CampaignSuccessParam> param, MessageType... type) {
-		executeWork(JSONObject.toJSONString(param), TemplateType.CAMPAIGN_SUCCESS, type);
-	}
-
-	/**
 	 * 退款通知
 	 */
 	public void refund(List<RefundParam> param, MessageType... type) {
 		executeWork(JSONObject.toJSONString(param), TemplateType.REFUND, type);
 	}
 
-	/**
-	 * 订单关闭提醒
-	 */
-	public void closeOrder(List<CloseOrderParam> param, MessageType... type) {
-		executeWork(JSONObject.toJSONString(param), TemplateType.CLOSE_ORDER, type);
-	}
-
-	/**
-	 * 团购失败通知
-	 */
-	public void campaignFailure(List<CampaignFailureParam> param, MessageType... type) {
-		executeWork(JSONObject.toJSONString(param), TemplateType.CAMPAIGN_FAILURE, type);
-	}
 
 	/**
 	 * 取货成功
@@ -193,7 +156,14 @@ public class MessageService {
 	public void goodsWarning(List<GoodsWarningParam> param, MessageType... type) {
 		executeWork(JSONObject.toJSONString(param), TemplateType.GOODS_WARNING, type);
 	}
-
+	/**
+	 * 短信验证码
+	 */
+	public void verificationCode(List<VerificationCodeParam> param, MessageType... type) {
+		executeWork(JSONObject.toJSONString(param), TemplateType.VERIFICATION_CODE, type);
+	}
+	
+	
 	/**
 	 * 异步推送消息
 	 * 

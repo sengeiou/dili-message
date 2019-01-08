@@ -25,6 +25,7 @@ import com.dili.message.sdk.domain.DeliverySuccessParam;
 import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
+import com.dili.message.sdk.domain.VerificationCodeParam;
 import com.dili.message.sdk.service.IMessageService;
 import com.dili.message.sdk.type.TemplateType;
 
@@ -55,7 +56,8 @@ public class AlidayuSmsImpl implements IMessageService {
 	public String template_refund;
 	@Value("${alidayu.sms.templateid.goodsWarning}")
 	public String template_goodsWarning;
-
+	@Value("${alidayu.sms.templateid.verificationCode}")
+	public String template_verificationCode;
 	/** 阿里大鱼客户端配置*/
 	private IClientProfile profile = null;
 
@@ -187,6 +189,34 @@ public class AlidayuSmsImpl implements IMessageService {
 		return false;
 	}
 
+	@Override
+	public boolean verificationCode(List<VerificationCodeParam> params) {
+		if (profile == null) {
+			log.error("初始化addEndpoint出错!");
+			return false;
+		}
+		for (VerificationCodeParam param : params) {
+			try {
+				IAcsClient acsClient = new DefaultAcsClient(profile);
+				
+				JSONObject json = new JSONObject();
+				json.put("code", param.getCode());
+				json.put("expireTime", param.getExpireTime());
+				SendSmsRequest request = buildData(template_verificationCode, param.getMobile(), json.toJSONString());
+
+				log.info(messagetype+"推送["+TemplateType.VERIFICATION_CODE+"]sendSmsRequest>" + JSONObject.toJSONString(request));
+				SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
+				log.info(messagetype+"推送["+TemplateType.VERIFICATION_CODE+"]sendSmsResponse>" + JSONObject.toJSONString(sendSmsResponse));
+				if (sendSmsResponse != null) {
+					return sendSmsResponse.getCode().equals("OK");
+				}
+			} catch (Exception e) {
+				log.error("用户[" + param.getMobile() + "]推送[" + TemplateType.VERIFICATION_CODE + "]消息失败！", e);
+			}
+		}
+		return false;
+	}
+	
 	/**
 	 * 构造阿里大鱼指定格式请求对象
 	 */

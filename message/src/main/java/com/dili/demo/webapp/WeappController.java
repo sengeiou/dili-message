@@ -24,6 +24,7 @@ import com.dili.message.sdk.domain.DeliveryParam;
 import com.dili.message.sdk.domain.DeliverySuccessParam;
 import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
+import com.dili.message.sdk.domain.VerificationCodeParam;
 import com.dili.message.sdk.type.MessageType;
 import com.dili.ss.util.RedisUtil;
 
@@ -170,12 +171,19 @@ public class WeappController {
 			LOG.info("小程序模板消息发送formId = " + jsonBody);
 			String formId=JSONObject.parseObject(jsonBody).getString("formId");
 //			redisUtil.remove("access_token");
-			sendDeliverySucess(formId);
+			verificationCode(formId);
 			return "sucess";
 		} catch (Exception e) {
 			LOG.error("小程序登录异常！", e);
 		}
 		return null;
+	}
+	private void verificationCode(String formId) {
+		VerificationCodeParam param=new VerificationCodeParam();
+		param.setCode("5555");
+		param.setMobile("18981883712");
+		param.setExpireTime("5");
+		messageService.verificationCode(param, MessageType.SMS);
 	}
 	private void goodsWarning(String formId) {
 		GoodsWarningParam param=new GoodsWarningParam();
@@ -231,7 +239,7 @@ public class WeappController {
 		param.setFormOrPayId(formId);
 		param.setMobile("18981883712");
 		param.setOpenId("oK0VK5Ef3lcQMkbfxEc5LD1dBEQk");
-		messageService.closeOrder(param, MessageType.WEAPP,MessageType.MP);
+//		messageService.closeOrder(param, MessageType.WEAPP,MessageType.MP);
 	}
 //	/**
 //	 * 同时推送小程序和公众号

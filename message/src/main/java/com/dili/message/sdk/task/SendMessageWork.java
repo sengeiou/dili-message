@@ -9,6 +9,7 @@ import com.dili.message.sdk.domain.DeliverySuccessParam;
 import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
+import com.dili.message.sdk.domain.VerificationCodeParam;
 import com.dili.message.sdk.service.IMessageService;
 import com.dili.message.sdk.type.TemplateType;
 
@@ -62,6 +63,9 @@ public class SendMessageWork implements Runnable {
 
 		} else if (templateType == TemplateType.GOODS_WARNING) {// 商品可用量告警
 			messageService.goodsWarning(JSONObject.parseArray(param, GoodsWarningParam.class));
+			
+		} else if (templateType == TemplateType.VERIFICATION_CODE) {// 短信验证码
+			messageService.verificationCode(JSONObject.parseArray(param, VerificationCodeParam.class));
 		}
 	}
 }
