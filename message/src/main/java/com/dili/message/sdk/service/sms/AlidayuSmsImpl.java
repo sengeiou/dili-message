@@ -74,36 +74,6 @@ public class AlidayuSmsImpl implements IMessageService {
 	}
 
 	@Override
-	public boolean delivery(List<DeliveryParam> params) {
-		if (profile == null) {
-			log.error("初始化addEndpoint出错!");
-			return false;
-		}
-		for (DeliveryParam param : params) {
-			try {
-				IAcsClient acsClient = new DefaultAcsClient(profile);
-				
-				JSONObject json = new JSONObject();
-				json.put("order", param.getOrderNo());
-				json.put("date", param.getDeliveryTime());
-				json.put("code", param.getDeliveryCode());
-				json.put("Shop", param.getDeliveryAddress());
-				SendSmsRequest request = buildData(template_delivery, param.getMobile(), json.toJSONString());
-
-				log.info(messagetype+"推送["+TemplateType.DELIVERY+"]sendSmsRequest>" + JSONObject.toJSONString(request));
-				SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
-				log.info(messagetype+"推送["+TemplateType.DELIVERY+"]sendSmsResponse>" + JSONObject.toJSONString(sendSmsResponse));
-				if (sendSmsResponse != null) {
-					return sendSmsResponse.getCode().equals("OK");
-				}
-			} catch (Exception e) {
-				log.error("用户[" + param.getMobile() + "]推送[" + TemplateType.DELIVERY + "]消息失败！", e);
-			}
-		}
-		return false;
-	}
-
-	@Override
 	public boolean refund(List<RefundParam> params) {
 		if (profile == null) {
 			log.error("初始化addEndpoint出错!");
@@ -159,29 +129,6 @@ public class AlidayuSmsImpl implements IMessageService {
 		return false;
 	}
 
-	@Override
-	public boolean campaignSuccess(List<CampaignSuccessParam> param) {
-		log.info(messagetype + "推送[" + TemplateType.CAMPAIGN_SUCCESS + "]暂未实现！");
-		return false;
-	}
-
-	@Override
-	public boolean closeOrder(List<CloseOrderParam> param) {
-		log.info(messagetype + "推送[" + TemplateType.CLOSE_ORDER + "]暂未实现！");
-		return false;
-	}
-
-	@Override
-	public boolean campaignFailure(List<CampaignFailureParam> params) {
-		log.info(messagetype + "推送[" + TemplateType.CAMPAIGN_FAILURE + "]暂未实现！");
-		return false;
-	}
-
-	@Override
-	public boolean deliverySuccess(List<DeliverySuccessParam> parames) {
-		log.info(messagetype + "推送[" + TemplateType.DELIVERY_SUCCESS + "]暂未实现！");
-		return false;
-	}
 
 	@Override
 	public boolean orderPaySuccess(List<OrderPaySuccessParam> param) {

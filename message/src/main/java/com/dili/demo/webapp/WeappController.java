@@ -24,6 +24,7 @@ import com.dili.message.sdk.domain.DeliveryParam;
 import com.dili.message.sdk.domain.DeliverySuccessParam;
 import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
+import com.dili.message.sdk.domain.RefundParam;
 import com.dili.message.sdk.domain.VerificationCodeParam;
 import com.dili.message.sdk.type.MessageType;
 import com.dili.ss.util.RedisUtil;
@@ -171,12 +172,22 @@ public class WeappController {
 			LOG.info("小程序模板消息发送formId = " + jsonBody);
 			String formId=JSONObject.parseObject(jsonBody).getString("formId");
 //			redisUtil.remove("access_token");
-			verificationCode(formId);
+			orderPaySuccess(formId);
 			return "sucess";
 		} catch (Exception e) {
 			LOG.error("小程序登录异常！", e);
 		}
 		return null;
+	}
+	private void refund(String formId) {
+		RefundParam param=new RefundParam();
+		param.setAmount("50.0");
+		param.setOrderNo("XXXX-001");;
+		param.setRefundState("完成");
+		param.setTime("2018-11-12 14:15:11");
+		param.setOpenId(openId);
+		param.setFormOrPayId(formId);
+		messageService.refund(param, MessageType.MP,MessageType.WEAPP);
 	}
 	private void verificationCode(String formId) {
 		VerificationCodeParam param=new VerificationCodeParam();
@@ -195,38 +206,34 @@ public class WeappController {
 	}
 	private void sendDelivery(String formId) {
 		DeliveryParam param=new DeliveryParam();
-		param.setBusinessHours("8:00-20:00");
-		param.setDeliveryAddress("人民大道东6号");
-		param.setDeliveryCode("665752");
-		param.setDeliveryTime("2018.11.13下午14：30");
-		param.setFormOrPayId(formId);
-		param.setMobile("18981883712");
-		param.setOpenId("oK0VK5Ef3lcQMkbfxEc5LD1dBEQk");
 		param.setOrderNo("XX36045872");
-		param.setProductItemInfo("鱼、人参、苹果");
-		param.setShopName("天安门一号店");
+		param.setCreateOrderTime("2018-11-12 14:15:11");
+		param.setOrderState("待提货");
+		param.setDeliveryAddress("人民大道东6号");
+		param.setOpenId(openId);
+		param.setFormOrPayId(formId);
 		messageService.delivery(param, MessageType.WEAPP,MessageType.MP);
 	}
-	private void sendDeliverySucess(String formId) {
-		DeliverySuccessParam param=new DeliverySuccessParam();
-		param.setProductInfo("鱼、人参、苹果");
-		param.setOrderNo("XX36045872");
-		param.setDeliveryTime("2018.11.13下午14：30");
-		param.setDeliveryShop("天安门一号店");
-		param.setFormOrPayId(formId);
-		param.setMobile("18981883712");
-		param.setOpenId("oK0VK5Ef3lcQMkbfxEc5LD1dBEQk");
-		messageService.deliverySuccess(param, MessageType.WEAPP,MessageType.MP);
-	}
+//	private void sendDeliverySucess(String formId) {
+//		DeliverySuccessParam param=new DeliverySuccessParam();
+//		param.setProductInfo("鱼、人参、苹果");
+//		param.setOrderNo("XX36045872");
+//		param.setDeliveryTime("2018.11.13下午14：30");
+//		param.setDeliveryShop("天安门一号店");
+//		param.setFormOrPayId(formId);
+//		param.setMobile("18981883712");
+//		param.setOpenId("oK0VK5Ef3lcQMkbfxEc5LD1dBEQk");
+//		messageService.deliverySuccess(param, MessageType.WEAPP,MessageType.MP);
+//	}
 	private void orderPaySuccess(String formId) {
 		OrderPaySuccessParam param=new OrderPaySuccessParam();
 		param.setFormOrPayId(formId);
-		param.setMobile("18981883712");
-		param.setOpenId("oK0VK5Ef3lcQMkbfxEc5LD1dBEQk");
 		param.setOrderNo("XX36045872");
-		param.setAmount("250元");
-		param.setProductName("苹果");
-		param.setCreateOrderTime("今天下午");
+		param.setOrderAmount("50.0");
+		param.setDeliveryAddress("天安门一号店");
+		param.setRemark("备注内容");
+		param.setOpenId(openId);
+		param.setFormOrPayId(formId);
 		messageService.orderPaySuccess(param, MessageType.WEAPP,MessageType.MP);
 	}
 	private void closeOrder(String formId) {

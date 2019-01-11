@@ -60,10 +60,6 @@ public class MpImpl implements IMessageService {
 	public String template_delivery;
 	@Value("${mp.templateid.refund}")
 	public String template_refund;
-	@Value("${mp.templateid.closeOrder}")
-	public String template_closeOrder;
-	@Value("${mp.templateid.deliverySuccess}")
-	public String template_deliverySuccess;
 	@Value("${mp.templateid.orderPaySuccess}")
 	public String template_orderPaySuccess;
 
@@ -74,11 +70,10 @@ public class MpImpl implements IMessageService {
 			for (DeliveryParam param : params) {
 				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
 				dataMap.put("first", new TemplateParam(TemplateType.DELIVERY.getName()));
-				dataMap.put("keyword1", new TemplateParam(param.getDeliveryCode()));
-				dataMap.put("keyword2", new TemplateParam(param.getProductItemInfo()));
-				dataMap.put("keyword3", new TemplateParam(param.getDeliveryAddress()));
-				dataMap.put("keyword4", new TemplateParam(param.getOrderNo()));
-				dataMap.put("keyword5", new TemplateParam(param.getDeliveryTime()));
+				dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
+				dataMap.put("keyword2", new TemplateParam(param.getCreateOrderTime()));
+				dataMap.put("keyword3", new TemplateParam(param.getOrderState()));
+				dataMap.put("keyword4", new TemplateParam(param.getDeliveryAddress()));
 				dataMap.put("remark", new TemplateParam(param.getRemark()));
 
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
@@ -99,10 +94,9 @@ public class MpImpl implements IMessageService {
 			for (RefundParam param : params) {
 				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
 				dataMap.put("first", new TemplateParam(TemplateType.REFUND.getName()));
-				dataMap.put("keyword1", new TemplateParam(param.getAmount()));
-				dataMap.put("keyword2", new TemplateParam(param.getCause()));
-				dataMap.put("keyword3", new TemplateParam(param.getTime()));
-				dataMap.put("keyword4", new TemplateParam(param.getRefundMode()));
+				dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
+				dataMap.put("keyword2", new TemplateParam(param.getAmount()));
+				dataMap.put("keyword3", new TemplateParam(param.getRefundState()));
 				dataMap.put("remark", new TemplateParam(param.getRemark()));
 
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
@@ -116,64 +110,6 @@ public class MpImpl implements IMessageService {
 		return ret;
 	}
 
-	@Override
-	public boolean campaignSuccess(List<CampaignSuccessParam> params) {
-		log.error(messagetype + "推送[" + TemplateType.CAMPAIGN_SUCCESS + "]暂未实现！");
-		return false;
-	}
-
-	@Override
-	public boolean closeOrder(List<CloseOrderParam> params) {
-		boolean ret = false;
-		try {
-			for (CloseOrderParam param : params) {
-				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
-				dataMap.put("first", new TemplateParam(TemplateType.CLOSE_ORDER.getName()));
-				dataMap.put("keyword1", new TemplateParam(param.getProductName()));
-				dataMap.put("keyword2", new TemplateParam(param.getOrderNo()));
-				dataMap.put("keyword3", new TemplateParam(param.getCreateOrderTime()));
-				dataMap.put("keyword4", new TemplateParam(param.getAmount()));
-				dataMap.put("keyword5", new TemplateParam(param.getCloseOrderTime()));
-				dataMap.put("remark", new TemplateParam(param.getRemark()));
-
-				HashMap<String, Object> sendParam = new HashMap<String, Object>();
-				sendParam.put("touser", param.getOpenId());
-				sendParam.put("mp_template_msg", buildParam(template_closeOrder, param.getPage(), dataMap));
-				ret = sendParam( sendParam,TemplateType.CLOSE_ORDER);
-			}
-		} catch (Exception e) {
-			log.error(messagetype + "推送[" + TemplateType.CLOSE_ORDER + "]异常！", e);
-		}
-		return ret;
-	}
-
-	@Override
-	public boolean campaignFailure(List<CampaignFailureParam> params) {
-		log.error(messagetype + "推送[" + TemplateType.CAMPAIGN_FAILURE + "]暂未实现！");
-		return false;
-	}
-
-	@Override
-	public boolean deliverySuccess(List<DeliverySuccessParam> params) {
-		boolean ret = false;
-		try {
-			for (DeliverySuccessParam param : params) {
-				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
-				dataMap.put("first", new TemplateParam(TemplateType.DELIVERY_SUCCESS.getName()));
-				dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
-				dataMap.put("keyword2", new TemplateParam(param.getDeliveryTime()));
-				dataMap.put("remark", new TemplateParam(param.getRemark()));
-
-				HashMap<String, Object> sendParam = new HashMap<String, Object>();
-				sendParam.put("touser", param.getOpenId());
-				sendParam.put("mp_template_msg", buildParam(template_deliverySuccess, param.getPage(), dataMap));
-				ret = sendParam(sendParam,TemplateType.DELIVERY_SUCCESS);
-			}
-		} catch (Exception e) {
-			log.error(messagetype + "推送[" + TemplateType.DELIVERY_SUCCESS + "]异常！", e);
-		}
-		return ret;
-	}
 
 	@Override
 	public boolean orderPaySuccess(List<OrderPaySuccessParam> params) {
@@ -183,7 +119,7 @@ public class MpImpl implements IMessageService {
 				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
 				dataMap.put("first", new TemplateParam(TemplateType.PAY_SUCCESS.getName()));
 				dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
-				dataMap.put("keyword2", new TemplateParam(param.getAmount()));
+				dataMap.put("keyword2", new TemplateParam(param.getOrderAmount()));
 				dataMap.put("remark", new TemplateParam(param.getRemark()));
 
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
@@ -197,11 +133,6 @@ public class MpImpl implements IMessageService {
 		return ret;
 	}
 
-	@Override
-	public boolean goodsWarning(List<GoodsWarningParam> params) {
-		log.info(messagetype + "推送[" + TemplateType.GOODS_WARNING + "]暂未实现！");
-		return false;
-	}
 
 	/**
 	 * 构造参数 <br>

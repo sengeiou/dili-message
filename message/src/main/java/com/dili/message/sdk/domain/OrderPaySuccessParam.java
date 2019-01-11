@@ -2,18 +2,17 @@ package com.dili.message.sdk.domain;
 
 /**
  * 消息推送-订单支付成功参数
+ * 
  * @author ：WangBo
  * @time ：2018年11月9日下午4:06:11
  */
-public class OrderPaySuccessParam extends BaseParam{
+public class OrderPaySuccessParam extends BaseParam {
 	/** 订单编号 */
 	private String orderNo;
-	/** 商品名称 */
-	private String productName;
-	/** 支付金额 */
-	private String amount;
-	/** 下单时间 */
-	private String createOrderTime;
+	/** 提货地点 */
+	private String deliveryAddress;
+	/** 订单金额 */
+	private String orderAmount;
 
 	/** 订单编号 */
 	public String getOrderNo() {
@@ -25,34 +24,24 @@ public class OrderPaySuccessParam extends BaseParam{
 		this.orderNo = orderNo;
 	}
 
-	/** 商品名称 */
-	public String getProductName() {
-		return productName;
+	/** 提货地点 */
+	public String getDeliveryAddress() {
+		return deliveryAddress;
 	}
 
-	/** 商品名称 */
-	public void setProductName(String productName) {
-		this.productName = productName;
+	/** 提货地点 */
+	public void setDeliveryAddress(String deliveryAddress) {
+		this.deliveryAddress = deliveryAddress;
 	}
 
-	/** 支付金额 */
-	public String getAmount() {
-		return amount;
+	/** 订单金额 */
+	public String getOrderAmount() {
+		return orderAmount;
 	}
 
-	/** 支付金额 */
-	public void setAmount(String amount) {
-		this.amount = amount;
-	}
-
-	/** 下单时间 */
-	public String getCreateOrderTime() {
-		return createOrderTime;
-	}
-
-	/** 下单时间 */
-	public void setCreateOrderTime(String createOrderTime) {
-		this.createOrderTime = createOrderTime;
+	/** 订单金额 */
+	public void setOrderAmount(String orderAmount) {
+		this.orderAmount = orderAmount;
 	}
 
 }

@@ -2,58 +2,34 @@ package com.dili.message.sdk.domain;
 
 /**
  * 消息推送-取货成功参数（包括短信、公众号、小程序）
+ * 
  * @author ：WangBo
  * @time ：2018年11月9日下午4:05:00
  */
-public class DeliverySuccessParam extends BaseParam{
-	/** 商品信息 */
-	private String productInfo;
-	/** 订单号 */
+public class DeliverySuccessParam extends BaseParam {
+	/** 订单编号 */
 	private String orderNo;
-	/** 取件时间 */
-	private String deliveryTime;
-	/** 取货店铺 */
-	private String deliveryShop;
+	/** 提货地点 */
+	private String deliveryAddress;
 
-
-	/** 商品信息 */
-	public String getProductInfo() {
-		return productInfo;
-	}
-
-	/** 商品信息 */
-	public void setProductInfo(String productInfo) {
-		this.productInfo = productInfo;
-	}
-
-	/** 订单号 */
+	/** 订单编号 */
 	public String getOrderNo() {
 		return orderNo;
 	}
 
-	/** 订单号 */
+	/** 订单编号 */
 	public void setOrderNo(String orderNo) {
 		this.orderNo = orderNo;
 	}
 
-	/** 取件时间 */
-	public String getDeliveryTime() {
-		return deliveryTime;
+	/** 提货地点 */
+	public String getDeliveryAddress() {
+		return deliveryAddress;
 	}
 
-	/** 取件时间 */
-	public void setDeliveryTime(String deliveryTime) {
-		this.deliveryTime = deliveryTime;
-	}
-
-	/** 取货店铺 */
-	public String getDeliveryShop() {
-		return deliveryShop;
-	}
-
-	/** 取货店铺 */
-	public void setDeliveryShop(String deliveryShop) {
-		this.deliveryShop = deliveryShop;
+	/** 提货地点 */
+	public void setDeliveryAddress(String deliveryAddress) {
+		this.deliveryAddress = deliveryAddress;
 	}
 
 }

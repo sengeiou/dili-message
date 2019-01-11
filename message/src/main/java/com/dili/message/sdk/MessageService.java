@@ -93,14 +93,6 @@ public class MessageService {
 	}
 
 
-	/**
-	 * 取货成功
-	 */
-	public void deliverySuccess(DeliverySuccessParam param, MessageType... type) {
-		List<DeliverySuccessParam> list = new ArrayList<DeliverySuccessParam>();
-		list.add(param);
-		executeWork(JSONObject.toJSONString(list), TemplateType.DELIVERY_SUCCESS, type);
-	}
 
 	/**
 	 * 订单支付成功通知
@@ -135,13 +127,6 @@ public class MessageService {
 		executeWork(JSONObject.toJSONString(param), TemplateType.REFUND, type);
 	}
 
-
-	/**
-	 * 取货成功
-	 */
-	public void deliverySuccess(List<DeliverySuccessParam> param, MessageType... type) {
-		executeWork(JSONObject.toJSONString(param), TemplateType.DELIVERY_SUCCESS, type);
-	}
 
 	/**
 	 * 订单支付成功通知

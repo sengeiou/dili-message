@@ -51,11 +51,17 @@ public class AccessTokenUtil {
 
 	/** 定时获取任务线程池 */
 	ScheduledExecutorService pool;
+	
+	static boolean isInit=true;
 
 	/**
 	 * 初始定时任务获取access_token,该任务间隔时间和首次执行时的延时时间相同
 	 */
 	public void initGetTokenWork() {
+		if(isInit) {
+			redisUtil.set(token_redis_key, null);
+			isInit=false;
+		}
 		if (pool == null) {
 			Object object = redisUtil.get(token_redis_key);
 			if (object == null || StringUtils.isBlank(object.toString())) {

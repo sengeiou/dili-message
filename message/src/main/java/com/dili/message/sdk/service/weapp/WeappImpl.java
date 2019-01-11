@@ -18,12 +18,7 @@ import com.dili.http.okhttp.OkHttpUtils;
 import com.dili.message.sdk.common.AccessTokenUtil;
 import com.dili.message.sdk.common.TemplateParam;
 import com.dili.message.sdk.constants.UrlConstants;
-import com.dili.message.sdk.domain.CampaignFailureParam;
-import com.dili.message.sdk.domain.CampaignSuccessParam;
-import com.dili.message.sdk.domain.CloseOrderParam;
 import com.dili.message.sdk.domain.DeliveryParam;
-import com.dili.message.sdk.domain.DeliverySuccessParam;
-import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
 import com.dili.message.sdk.service.IMessageService;
@@ -51,20 +46,14 @@ public class WeappImpl implements IMessageService {
 	/**
 	 * 支持的模板
 	 */
+	@Value("${weapp.templateid.orderPaySuccess}")
+	public String template_orderPaySuccess;
 	@Value("${weapp.templateid.delivery}")
 	public String template_delivery;
 	@Value("${weapp.templateid.refund}")
 	public String template_refund;
-	@Value("${weapp.templateid.campaignSuccess}")
-	public String template_campaignSuccess;
-	@Value("${weapp.templateid.closeOrder}")
-	public String template_closeOrder;
-	@Value("${weapp.templateid.campaignFailure}")
-	public String template_campaignFailure;
-	@Value("${weapp.templateid.deliverySuccess}")
-	public String template_deliverySuccess;
-	@Value("${weapp.templateid.orderPaySuccess}")
-	public String template_orderPaySuccess;
+	
+	
 	@Resource
 	private AccessTokenUtil accessTokenUtil;
 
@@ -74,12 +63,9 @@ public class WeappImpl implements IMessageService {
 		try {
 			for (DeliveryParam param : params) {
 				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
-				dataMap.put("keyword1", new TemplateParam(param.getDeliveryCode()));
-				dataMap.put("keyword2", new TemplateParam(param.getProductItemInfo()));
-				dataMap.put("keyword3", new TemplateParam(param.getDeliveryAddress()));
-				dataMap.put("keyword4", new TemplateParam(param.getOrderNo()));
-				dataMap.put("keyword5", new TemplateParam(param.getDeliveryTime()));
-				dataMap.put("keyword6", new TemplateParam(param.getRemark()));
+				dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
+				dataMap.put("keyword2", new TemplateParam(param.getDeliveryAddress()));
+				dataMap.put("keyword3", new TemplateParam(param.getRemark()));
 				HashMap<String, Object> weappParam = buildParam(template_delivery, param.getPage(), param.getFormOrPayId(), dataMap);
 
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
@@ -99,12 +85,10 @@ public class WeappImpl implements IMessageService {
 		try {
 			for (RefundParam param : params) {
 				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
-				dataMap.put("keyword1", new TemplateParam(param.getAmount()));
-				dataMap.put("keyword2", new TemplateParam(param.getCause()));
-				dataMap.put("keyword3", new TemplateParam(param.getTime()));
-				dataMap.put("keyword4", new TemplateParam(param.getRefundMode()));
-				dataMap.put("keyword5", new TemplateParam(param.getOrderNo()));
-				dataMap.put("keyword6", new TemplateParam(param.getRemark()));
+				dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
+				dataMap.put("keyword2", new TemplateParam(param.getTime()));
+				dataMap.put("keyword3", new TemplateParam(param.getAmount()));
+				dataMap.put("keyword4", new TemplateParam(param.getRemark()));
 				HashMap<String, Object> weappParam = buildParam(template_refund, param.getPage(), param.getFormOrPayId(), dataMap);
 
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
@@ -118,100 +102,6 @@ public class WeappImpl implements IMessageService {
 		return ret;
 	}
 
-	@Override
-	public boolean campaignSuccess(List<CampaignSuccessParam> params) {
-		boolean ret = false;
-		try {
-			for (CampaignSuccessParam param : params) {
-				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
-				dataMap.put("keyword1", new TemplateParam(param.getProductName()));
-				dataMap.put("keyword2", new TemplateParam(param.getPeoples()));
-				dataMap.put("keyword3", new TemplateParam(param.getPrice()));
-				dataMap.put("keyword4", new TemplateParam(param.getTimeRemaining()));
-				HashMap<String, Object> weappParam = buildParam(template_campaignSuccess, param.getPage(), param.getFormOrPayId(), dataMap);
-
-				HashMap<String, Object> sendParam = new HashMap<String, Object>();
-				sendParam.put("touser", param.getOpenId());
-				sendParam.put("weapp_template_msg", weappParam);
-				ret = sendParam(sendParam,TemplateType.CAMPAIGN_SUCCESS);
-			}
-		} catch (Exception e) {
-			log.error(messagetype + "推送[" + TemplateType.CAMPAIGN_SUCCESS + "]异常！", e);
-		}
-		return ret;
-	}
-
-	@Override
-	public boolean closeOrder(List<CloseOrderParam> params) {
-		boolean ret = false;
-		try {
-			for (CloseOrderParam param : params) {
-				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
-				dataMap.put("keyword1", new TemplateParam(param.getProductName()));
-				dataMap.put("keyword2", new TemplateParam(param.getOrderNo()));
-				dataMap.put("keyword3", new TemplateParam(param.getAmount()));
-				dataMap.put("keyword4", new TemplateParam(param.getCreateOrderTime()));
-				dataMap.put("keyword5", new TemplateParam(param.getKindlyReminder()));
-				HashMap<String, Object> weappParam = buildParam(template_closeOrder, param.getPage(), param.getFormOrPayId(), dataMap);
-
-				HashMap<String, Object> sendParam = new HashMap<String, Object>();
-				sendParam.put("touser", param.getOpenId());
-				sendParam.put("weapp_template_msg", weappParam);
-				ret = sendParam(sendParam,TemplateType.CLOSE_ORDER);
-			}
-		} catch (Exception e) {
-			log.error(messagetype + "推送[" + TemplateType.CLOSE_ORDER + "]异常！", e);
-		}
-		return ret;
-	}
-
-	@Override
-	public boolean campaignFailure(List<CampaignFailureParam> params) {
-		boolean ret = false;
-		try {
-			for (CampaignFailureParam param : params) {
-				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
-				dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
-				dataMap.put("keyword2", new TemplateParam(param.getProcessingResults()));
-				dataMap.put("keyword3", new TemplateParam(param.getCampaignName()));
-				dataMap.put("keyword4", new TemplateParam(param.getAmount()));
-				dataMap.put("keyword5", new TemplateParam(param.getFailureCause()));
-				dataMap.put("keyword6", new TemplateParam(param.getCampaignProduct()));
-				HashMap<String, Object> weappParam = buildParam(template_campaignFailure, param.getPage(), param.getFormOrPayId(), dataMap);
-
-				HashMap<String, Object> sendParam = new HashMap<String, Object>();
-				sendParam.put("touser", param.getOpenId());
-				sendParam.put("weapp_template_msg", weappParam);
-				ret = sendParam(sendParam,TemplateType.CAMPAIGN_FAILURE);
-			}
-		} catch (Exception e) {
-			log.error(messagetype + "推送[" + TemplateType.CAMPAIGN_FAILURE + "]异常！", e);
-		}
-		return ret;
-	}
-
-	@Override
-	public boolean deliverySuccess(List<DeliverySuccessParam> params) {
-		boolean ret = false;
-		try {
-			for (DeliverySuccessParam param : params) {
-				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
-				dataMap.put("keyword1", new TemplateParam(param.getProductInfo()));
-				dataMap.put("keyword2", new TemplateParam(param.getOrderNo()));
-				dataMap.put("keyword3", new TemplateParam(param.getDeliveryTime()));
-				dataMap.put("keyword4", new TemplateParam(param.getDeliveryShop()));
-				HashMap<String, Object> weappParam = buildParam(template_deliverySuccess, param.getPage(), param.getFormOrPayId(), dataMap);
-
-				HashMap<String, Object> sendParam = new HashMap<String, Object>();
-				sendParam.put("touser", param.getOpenId());
-				sendParam.put("weapp_template_msg", weappParam);
-				ret = sendParam(sendParam,TemplateType.DELIVERY_SUCCESS);
-			}
-		} catch (Exception e) {
-			log.error(messagetype + "推送[" + TemplateType.DELIVERY_SUCCESS + "]异常！", e);
-		}
-		return ret;
-	}
 
 	@Override
 	public boolean orderPaySuccess(List<OrderPaySuccessParam> params) {
@@ -220,9 +110,9 @@ public class WeappImpl implements IMessageService {
 			for (OrderPaySuccessParam param : params) {
 				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
 				dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
-				dataMap.put("keyword2", new TemplateParam(param.getProductName()));
-				dataMap.put("keyword3", new TemplateParam(param.getAmount()));
-				dataMap.put("keyword4", new TemplateParam(param.getCreateOrderTime()));
+				dataMap.put("keyword2", new TemplateParam(param.getOrderAmount()));
+				dataMap.put("keyword3", new TemplateParam(param.getDeliveryAddress()));
+				dataMap.put("keyword4", new TemplateParam(param.getRemark()));
 				HashMap<String, Object> weappParam = buildParam(template_orderPaySuccess, param.getPage(), param.getFormOrPayId(), dataMap);
 
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
@@ -236,11 +126,6 @@ public class WeappImpl implements IMessageService {
 		return ret;
 	}
 
-	@Override
-	public boolean goodsWarning(List<GoodsWarningParam> param) {
-		log.info(messagetype + "推送[" + TemplateType.GOODS_WARNING + "]暂未实现！");
-		return false;
-	}
 
 	/**
 	 * 构造参数 <br>

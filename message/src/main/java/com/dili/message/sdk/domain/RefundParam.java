@@ -9,14 +9,12 @@ package com.dili.message.sdk.domain;
 public class RefundParam extends BaseParam {
 	/** 退款时间 */
 	private String time;
-	/** 退款方式 */
-	private String refundMode;
 	/** 退款金额 */
 	private String amount;
-	/** 退款原因 */
-	private String cause;
-	/** 退款单号 */
+	/** 订单号 */
 	private String orderNo;
+	/** 退款状态 */
+	private String refundState;
 
 	/** 退款时间 */
 	public String getTime() {
@@ -38,16 +36,6 @@ public class RefundParam extends BaseParam {
 		this.amount = amount;
 	}
 
-	/** 退款原因 */
-	public String getCause() {
-		return cause;
-	}
-
-	/** 退款原因 */
-	public void setCause(String cause) {
-		this.cause = cause;
-	}
-
 	/** 退款单号 */
 	public String getOrderNo() {
 		return orderNo;
@@ -58,14 +46,14 @@ public class RefundParam extends BaseParam {
 		this.orderNo = orderNo;
 	}
 
-	/** 退款方式 */
-	public String getRefundMode() {
-		return refundMode;
+	/** 退款状态 */
+	public String getRefundState() {
+		return refundState;
 	}
 
-	/** 退款方式 */
-	public void setRefundMode(String refundMode) {
-		this.refundMode = refundMode;
+	/** 退款状态 */
+	public void setRefundState(String refundState) {
+		this.refundState = refundState;
 	}
 
 }
