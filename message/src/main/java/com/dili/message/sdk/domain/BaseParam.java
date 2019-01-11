@@ -17,6 +17,8 @@ public class BaseParam {
 	private String page;
 	/** 备注 */
 	private String remark;
+	/** 消息头 */
+	private String first;
 
 	/** 手机号(短信必填) */
 	public String getMobile() {
@@ -66,6 +68,16 @@ public class BaseParam {
 	/** 备注 */
 	public void setRemark(String remark) {
 		this.remark = remark;
+	}
+
+	/** 消息头 */
+	public String getFirst() {
+		return first;
+	}
+
+	/** 消息头 */
+	public void setFirst(String first) {
+		this.first = first;
 	}
 
 }

@@ -69,7 +69,7 @@ public class MpImpl implements IMessageService {
 		try {
 			for (DeliveryParam param : params) {
 				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
-				dataMap.put("first", new TemplateParam(TemplateType.DELIVERY.getName()));
+				dataMap.put("first", new TemplateParam(param.getFirst()));
 				dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
 				dataMap.put("keyword2", new TemplateParam(param.getCreateOrderTime()));
 				dataMap.put("keyword3", new TemplateParam(param.getOrderState()));
@@ -93,7 +93,7 @@ public class MpImpl implements IMessageService {
 		try {
 			for (RefundParam param : params) {
 				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
-				dataMap.put("first", new TemplateParam(TemplateType.REFUND.getName()));
+				dataMap.put("first", new TemplateParam(param.getFirst()));
 				dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
 				dataMap.put("keyword2", new TemplateParam(param.getAmount()));
 				dataMap.put("keyword3", new TemplateParam(param.getRefundState()));
@@ -117,7 +117,7 @@ public class MpImpl implements IMessageService {
 		try {
 			for (OrderPaySuccessParam param : params) {
 				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
-				dataMap.put("first", new TemplateParam(TemplateType.PAY_SUCCESS.getName()));
+				dataMap.put("first", new TemplateParam(param.getFirst()));
 				dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
 				dataMap.put("keyword2", new TemplateParam(param.getOrderAmount()));
 				dataMap.put("remark", new TemplateParam(param.getRemark()));
