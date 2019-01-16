@@ -26,6 +26,7 @@ import com.dili.message.sdk.domain.DeliverySuccessParam;
 import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
+import com.dili.message.sdk.domain.ReturnApplyParam;
 import com.dili.message.sdk.domain.VerificationCodeParam;
 import com.dili.message.sdk.service.mp.MpImpl;
 import com.dili.message.sdk.service.sms.AlidayuSmsImpl;
@@ -148,6 +149,21 @@ public class MessageService {
 		executeWork(JSONObject.toJSONString(param), TemplateType.VERIFICATION_CODE, type);
 	}
 	
+	/**
+	 * 退货申请
+	 */
+	public void returnApply(List<ReturnApplyParam> param, MessageType... type) {
+		executeWork(JSONObject.toJSONString(param), TemplateType.RETURN_APPLY, type);
+	}
+	
+	/**
+	 * 退货申请
+	 */
+	public void returnApply(ReturnApplyParam param, MessageType... type) {
+		List<ReturnApplyParam> list = new ArrayList<ReturnApplyParam>();
+		list.add(param);
+		executeWork(JSONObject.toJSONString(list), TemplateType.RETURN_APPLY, type);
+	}
 	
 	/**
 	 * 异步推送消息

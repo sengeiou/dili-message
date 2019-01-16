@@ -1,14 +1,11 @@
 package com.dili.message.sdk.task;
 
 import com.alibaba.fastjson.JSONObject;
-import com.dili.message.sdk.domain.CampaignFailureParam;
-import com.dili.message.sdk.domain.CampaignSuccessParam;
-import com.dili.message.sdk.domain.CloseOrderParam;
 import com.dili.message.sdk.domain.DeliveryParam;
-import com.dili.message.sdk.domain.DeliverySuccessParam;
 import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
+import com.dili.message.sdk.domain.ReturnApplyParam;
 import com.dili.message.sdk.domain.VerificationCodeParam;
 import com.dili.message.sdk.service.IMessageService;
 import com.dili.message.sdk.type.TemplateType;
@@ -54,6 +51,9 @@ public class SendMessageWork implements Runnable {
 			
 		} else if (templateType == TemplateType.VERIFICATION_CODE) {// 短信验证码
 			messageService.verificationCode(JSONObject.parseArray(param, VerificationCodeParam.class));
+			
+		}else if (templateType == TemplateType.RETURN_APPLY) {// 退货申请
+			messageService.returnApply(JSONObject.parseArray(param, ReturnApplyParam.class));
 		}
 	}
 }

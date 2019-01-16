@@ -6,6 +6,7 @@ import com.dili.message.sdk.domain.DeliveryParam;
 import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
+import com.dili.message.sdk.domain.ReturnApplyParam;
 import com.dili.message.sdk.domain.VerificationCodeParam;
 
 /**
@@ -20,7 +21,7 @@ public interface IMessageService {
 	 * 
 	 * @return 单条数据可以使用，多条数据意义不大
 	 */
-	default public boolean delivery(List<DeliveryParam> param) {
+	default public boolean delivery(List<DeliveryParam> params) {
 		return false;
 	}
 
@@ -29,7 +30,7 @@ public interface IMessageService {
 	 * 
 	 * @return 单条数据可以使用，多条数据意义不大
 	 */
-	default public boolean refund(List<RefundParam> param) {
+	default public boolean refund(List<RefundParam> params) {
 		return false;
 	}
 
@@ -39,7 +40,7 @@ public interface IMessageService {
 	 * 
 	 * @return 单条数据可以使用，多条数据意义不大
 	 */
-	default public boolean orderPaySuccess(List<OrderPaySuccessParam> param) {
+	default public boolean orderPaySuccess(List<OrderPaySuccessParam> params) {
 		return false;
 	}
 
@@ -48,7 +49,7 @@ public interface IMessageService {
 	 * 
 	 * @return 单条数据可以使用，多条数据意义不大
 	 */
-	default public boolean goodsWarning(List<GoodsWarningParam> param) {
+	default public boolean goodsWarning(List<GoodsWarningParam> params) {
 		return false;
 	}
 	
@@ -57,8 +58,15 @@ public interface IMessageService {
 	 * 
 	 * @return 单条数据可以使用，多条数据意义不大
 	 */
-	default public boolean verificationCode(List<VerificationCodeParam> param) {
+	default public boolean verificationCode(List<VerificationCodeParam> params) {
 		return false;
 	}
-
+	/**
+	 * 退货申请
+	 * 
+	 * @return 单条数据可以使用，多条数据意义不大
+	 */
+	default public boolean returnApply(List<ReturnApplyParam> params) {
+		return false;
+	}
 }

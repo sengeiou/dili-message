@@ -25,6 +25,7 @@ import com.dili.message.sdk.domain.DeliverySuccessParam;
 import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
+import com.dili.message.sdk.domain.ReturnApplyParam;
 import com.dili.message.sdk.domain.VerificationCodeParam;
 import com.dili.message.sdk.type.MessageType;
 import com.dili.ss.util.RedisUtil;
@@ -172,7 +173,7 @@ public class WeappController {
 			LOG.info("小程序模板消息发送formId = " + jsonBody);
 			String formId=JSONObject.parseObject(jsonBody).getString("formId");
 //			redisUtil.remove("access_token");
-			orderPaySuccess(formId);
+			returnApply(formId);
 			return "sucess";
 		} catch (Exception e) {
 			LOG.error("小程序登录异常！", e);
@@ -188,6 +189,17 @@ public class WeappController {
 		param.setOpenId(openId);
 		param.setFormOrPayId(formId);
 		messageService.refund(param, MessageType.MP,MessageType.WEAPP);
+	}
+	private void returnApply(String formId) {
+		ReturnApplyParam param=new ReturnApplyParam();
+		param.setAmount("50.0");
+		param.setOrderNo("XXXX-001");;
+		param.setTime("2018-11-12 14:15:11");
+		param.setRefundDesc("退款说明 。");
+		param.setProductQuantity("52");
+		param.setOpenId(openId);
+		param.setFormOrPayId(formId);
+		messageService.returnApply(param, MessageType.MP,MessageType.WEAPP);
 	}
 	private void verificationCode(String formId) {
 		VerificationCodeParam param=new VerificationCodeParam();

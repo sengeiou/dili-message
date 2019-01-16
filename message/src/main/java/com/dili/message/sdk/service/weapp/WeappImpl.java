@@ -21,6 +21,8 @@ import com.dili.message.sdk.constants.UrlConstants;
 import com.dili.message.sdk.domain.DeliveryParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
+import com.dili.message.sdk.domain.ReturnApplyParam;
+import com.dili.message.sdk.domain.VerificationCodeParam;
 import com.dili.message.sdk.service.IMessageService;
 import com.dili.message.sdk.type.TemplateType;
 
@@ -52,7 +54,8 @@ public class WeappImpl implements IMessageService {
 	public String template_delivery;
 	@Value("${weapp.templateid.refund}")
 	public String template_refund;
-	
+	@Value("${weapp.templateid.returnApply}")
+	public String template_returnApply;
 	
 	@Resource
 	private AccessTokenUtil accessTokenUtil;
@@ -126,7 +129,28 @@ public class WeappImpl implements IMessageService {
 		return ret;
 	}
 
+	@Override
+	public boolean returnApply(List<ReturnApplyParam> params) {
+		boolean ret = false;
+		try {
+			for (ReturnApplyParam param : params) {
+				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
+				dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
+				dataMap.put("keyword2", new TemplateParam(param.getAmount()));
+				dataMap.put("keyword3", new TemplateParam(param.getTime()));
+				dataMap.put("keyword4", new TemplateParam(param.getRefundDesc()));
+				HashMap<String, Object> weappParam = buildParam(template_returnApply, param.getPage(), param.getFormOrPayId(), dataMap);
 
+				HashMap<String, Object> sendParam = new HashMap<String, Object>();
+				sendParam.put("touser", param.getOpenId());
+				sendParam.put("weapp_template_msg", weappParam);
+				ret = sendParam(sendParam,TemplateType.RETURN_APPLY);
+			}
+		} catch (Exception e) {
+			log.error(messagetype + "推送[" + TemplateType.RETURN_APPLY + "]异常！", e);
+		}
+		return ret;
+	}
 	/**
 	 * 构造参数 <br>
 	 * <i> 按小程序和公众号统一的服务消息接口参数格式构造

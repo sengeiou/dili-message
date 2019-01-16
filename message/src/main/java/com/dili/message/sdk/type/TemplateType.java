@@ -32,7 +32,10 @@ public enum TemplateType {
 	GOODS_WARNING(8, "可用库存告警通知"),
 	
 	/** 短信验证码 */
-	VERIFICATION_CODE(9, "短信验证码");
+	VERIFICATION_CODE(9, "短信验证码"),
+	
+	/** 退货申请 */
+	RETURN_APPLY(10, "退货申请");
 
 	private String name;
 	private int code;

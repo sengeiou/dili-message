@@ -18,14 +18,10 @@ import com.dili.http.okhttp.OkHttpUtils;
 import com.dili.message.sdk.common.AccessTokenUtil;
 import com.dili.message.sdk.common.TemplateParam;
 import com.dili.message.sdk.constants.UrlConstants;
-import com.dili.message.sdk.domain.CampaignFailureParam;
-import com.dili.message.sdk.domain.CampaignSuccessParam;
-import com.dili.message.sdk.domain.CloseOrderParam;
 import com.dili.message.sdk.domain.DeliveryParam;
-import com.dili.message.sdk.domain.DeliverySuccessParam;
-import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
+import com.dili.message.sdk.domain.ReturnApplyParam;
 import com.dili.message.sdk.service.IMessageService;
 import com.dili.message.sdk.type.TemplateType;
 
@@ -62,7 +58,9 @@ public class MpImpl implements IMessageService {
 	public String template_refund;
 	@Value("${mp.templateid.orderPaySuccess}")
 	public String template_orderPaySuccess;
-
+	@Value("${mp.templateid.returnApply}")
+	public String template_returnApply;
+	
 	@Override
 	public boolean delivery(List<DeliveryParam> params) {
 		boolean ret = false;
@@ -132,7 +130,28 @@ public class MpImpl implements IMessageService {
 		}
 		return ret;
 	}
+	@Override
+	public boolean returnApply(List<ReturnApplyParam> params) {
+		boolean ret = false;
+		try {
+			for (ReturnApplyParam param : params) {
+				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
+				dataMap.put("first", new TemplateParam(param.getFirst()));
+				dataMap.put("keyword1", new TemplateParam(param.getOrderNo()));
+				dataMap.put("keyword2", new TemplateParam(param.getProductQuantity()));
+				dataMap.put("keyword3", new TemplateParam(param.getAmount()));
+				dataMap.put("remark", new TemplateParam(param.getRemark()));
 
+				HashMap<String, Object> sendParam = new HashMap<String, Object>();
+				sendParam.put("touser", param.getOpenId());
+				sendParam.put("mp_template_msg", buildParam(template_returnApply, param.getPage(), dataMap));
+				ret = sendParam(sendParam,TemplateType.RETURN_APPLY);
+			}
+		} catch (Exception e) {
+			log.error(messagetype + "推送[" + TemplateType.RETURN_APPLY + "]异常！", e);
+		}
+		return ret;
+	}
 
 	/**
 	 * 构造参数 <br>
