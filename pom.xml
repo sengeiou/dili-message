@@ -6,7 +6,7 @@
 	<groupId>com.dili</groupId>
 	<artifactId>dili-message</artifactId>
 	<name>dili-message</name>
-	<version>0.1.8-SNAPSHOT</version>
+	<version>0.1.9-SNAPSHOT</version>
 	<!--<version>1.0.0.RELEASE</version> -->
 	<description>父项目</description>
 	<packaging>pom</packaging>
@@ -27,7 +27,7 @@
 		<targetServicePackage>com.dili.store.service</targetServicePackage>
 		<targetProviderPackage>com.dili.store.provider</targetProviderPackage>
 		<targetControllerPackage>com.dili.store.controller</targetControllerPackage>
-		<templateRootDir>${basedir}/mbg-templates</templateRootDir>
+		<!-- <templateRootDir>${basedir}/mbg-templates</templateRootDir> -->
 		<projectdir>${basedir}</projectdir>
 		<!-- XML生成路径 -->
 		<targetResourcesProject>${basedir}/src/main/resources</targetResourcesProject>
