@@ -18,11 +18,7 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dili.message.sdk.common.AccessTokenUtil;
-import com.dili.message.sdk.domain.CampaignFailureParam;
-import com.dili.message.sdk.domain.CampaignSuccessParam;
-import com.dili.message.sdk.domain.CloseOrderParam;
 import com.dili.message.sdk.domain.DeliveryParam;
-import com.dili.message.sdk.domain.DeliverySuccessParam;
 import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
@@ -65,14 +61,7 @@ public class MessageService {
 			log.error("初始化推送线程池出错.", e);
 		}
 	}
-	/**
-	 * 短信验证码
-	 */
-	public void verificationCode(VerificationCodeParam param, MessageType... type) {
-		List<VerificationCodeParam> list = new ArrayList<VerificationCodeParam>();
-		list.add(param);
-		executeWork(JSONObject.toJSONString(list), TemplateType.VERIFICATION_CODE, type);
-	}
+	
 	/**
 	 * 取货通知
 	 */
@@ -82,7 +71,13 @@ public class MessageService {
 		executeWork(JSONObject.toJSONString(list), TemplateType.DELIVERY, type);
 
 	}
+	/**
+	 * 取货通知
+	 */
+	public void delivery(List<DeliveryParam> param, MessageType... type) {
+		executeWork(JSONObject.toJSONString(param), TemplateType.DELIVERY, type);
 
+	}
 
 	/**
 	 * 退款通知
@@ -92,7 +87,12 @@ public class MessageService {
 		list.add(param);
 		executeWork(JSONObject.toJSONString(list), TemplateType.REFUND, type);
 	}
-
+	/**
+	 * 退款通知
+	 */
+	public void refund(List<RefundParam> param, MessageType... type) {
+		executeWork(JSONObject.toJSONString(param), TemplateType.REFUND, type);
+	}
 
 
 	/**
@@ -105,6 +105,12 @@ public class MessageService {
 	}
 
 	/**
+	 * 订单支付成功通知
+	 */
+	public void orderPaySuccess(List<OrderPaySuccessParam> param, MessageType... type) {
+		executeWork(JSONObject.toJSONString(param), TemplateType.PAY_SUCCESS, type);
+	}
+	/**
 	 * 商品告警通知
 	 */
 	public void goodsWarning(GoodsWarningParam param, MessageType... type) {
@@ -112,43 +118,30 @@ public class MessageService {
 		list.add(param);
 		executeWork(JSONObject.toJSONString(list), TemplateType.GOODS_WARNING, type);
 	}
-
-	/**
-	 * 取货通知
-	 */
-	public void delivery(List<DeliveryParam> param, MessageType... type) {
-		executeWork(JSONObject.toJSONString(param), TemplateType.DELIVERY, type);
-
-	}
-
-	/**
-	 * 退款通知
-	 */
-	public void refund(List<RefundParam> param, MessageType... type) {
-		executeWork(JSONObject.toJSONString(param), TemplateType.REFUND, type);
-	}
-
-
-	/**
-	 * 订单支付成功通知
-	 */
-	public void orderPaySuccess(List<OrderPaySuccessParam> param, MessageType... type) {
-		executeWork(JSONObject.toJSONString(param), TemplateType.PAY_SUCCESS, type);
-	}
-
 	/**
 	 * 商品告警通知
 	 */
 	public void goodsWarning(List<GoodsWarningParam> param, MessageType... type) {
 		executeWork(JSONObject.toJSONString(param), TemplateType.GOODS_WARNING, type);
 	}
+
+
+
+	
 	/**
 	 * 短信验证码
 	 */
 	public void verificationCode(List<VerificationCodeParam> param, MessageType... type) {
 		executeWork(JSONObject.toJSONString(param), TemplateType.VERIFICATION_CODE, type);
 	}
-	
+	/**
+	 * 短信验证码
+	 */
+	public void verificationCode(VerificationCodeParam param, MessageType... type) {
+		List<VerificationCodeParam> list = new ArrayList<VerificationCodeParam>();
+		list.add(param);
+		executeWork(JSONObject.toJSONString(list), TemplateType.VERIFICATION_CODE, type);
+	}
 	/**
 	 * 退货申请
 	 */
