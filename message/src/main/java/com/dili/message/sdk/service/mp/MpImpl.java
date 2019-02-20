@@ -9,7 +9,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
@@ -23,6 +22,7 @@ import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
 import com.dili.message.sdk.domain.ReturnApplyParam;
 import com.dili.message.sdk.service.IMessageService;
+import com.dili.message.sdk.service.weapp.WeappImpl;
 import com.dili.message.sdk.type.TemplateType;
 
 import okhttp3.Response;
@@ -43,23 +43,18 @@ public class MpImpl implements IMessageService {
 	@Resource
 	private AccessTokenUtil accessTokenUtil;
 
-	@Value("${mp.appId}")
-	public String mpAppId;
-	@Value("${weapp.appId}")
-	public String weappAppId;
-	@Value("${mp.appsecret}")
-	public String appsecret;
-	/**
-	 * 支持的模板
-	 */
-	@Value("${mp.templateid.delivery}")
-	public String template_delivery;
-	@Value("${mp.templateid.refund}")
-	public String template_refund;
-	@Value("${mp.templateid.orderPaySuccess}")
-	public String template_orderPaySuccess;
-	@Value("${mp.templateid.returnApply}")
-	public String template_returnApply;
+	public String mpAppId = "wx9fb157a2c5c18c81";
+	public String appsecret ="0e94c851320ec3a17cd19ac009dec280";
+	
+///支持的模板
+	/** 取货通知 */
+	public String template_delivery ="UIODWv8AOhuZCKM_dQWfT35Su0-96XYEvykAbEHMcOQ";
+	/** 退款通知*/
+	public String template_refund = "d6Dnq4j0qWrIJePX8_3ChOrThQvmEYfVy4oNHImCITM";
+	/** 支付成功*/
+	public String template_orderPaySuccess="EYRqYct2xYs_MQXhPDhvTPU-smeEjsW7ZxdNl3sN2Ko";
+	/** 退款申请*/
+	public String template_returnApply = "r71u8jR4qnr-cPo2E5jrjuQWQC-pShUb_09NlHQ-Y0E";
 	
 	@Override
 	public boolean delivery(List<DeliveryParam> params) {
@@ -172,7 +167,7 @@ public class MpImpl implements IMessageService {
 		mpParam.put("data", data);
 
 		JSONObject miniprogram = new JSONObject();
-		miniprogram.put("appid", weappAppId);
+		miniprogram.put("appid", WeappImpl.appId);
 		miniprogram.put("path", page);
 		mpParam.put("miniprogram", miniprogram);
 		return mpParam;

@@ -6,7 +6,6 @@ import javax.annotation.PostConstruct;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
@@ -17,14 +16,10 @@ import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
-import com.dili.message.sdk.domain.CampaignFailureParam;
-import com.dili.message.sdk.domain.CampaignSuccessParam;
-import com.dili.message.sdk.domain.CloseOrderParam;
-import com.dili.message.sdk.domain.DeliveryParam;
-import com.dili.message.sdk.domain.DeliverySuccessParam;
 import com.dili.message.sdk.domain.GoodsWarningParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
+import com.dili.message.sdk.domain.ReturnApplyParam;
 import com.dili.message.sdk.domain.VerificationCodeParam;
 import com.dili.message.sdk.service.IMessageService;
 import com.dili.message.sdk.type.TemplateType;
@@ -40,24 +35,23 @@ public class AlidayuSmsImpl implements IMessageService {
 	static Logger log = LoggerFactory.getLogger(AlidayuSmsImpl.class);
 	private static String messagetype = "短信";
 
-	@Value("${alidayu.sms.app.key}")
-	public String app_key;
-	@Value("${alidayu.sms.secret}")
-	public String secret;
-	@Value("${alidayu.sms.signname}")
-	public String sms_sign_name;
+	private String app_key="LTAImzT8nS0nCKy2";
+	private String secret ="Msz8vY30Fl8cspVBzuXVSTi5LMzAnw";
+	private String sms_sign_name="地利生鲜";
 
-	/**
-	 * 支持的模板
-	 */
-	@Value("${alidayu.sms.templateid.delivery}")
-	public String template_delivery;
-	@Value("${alidayu.sms.templateid.refund}")
-	public String template_refund;
-	@Value("${alidayu.sms.templateid.goodsWarning}")
-	public String template_goodsWarning;
-	@Value("${alidayu.sms.templateid.verificationCode}")
-	public String template_verificationCode;
+	///支持的模板ID
+	/** 取货通知 */
+	private String template_delivery="SMS_150172881";
+	/** 退款通知*/
+	private String template_refund="SMS_150172896";
+	/** 退款申请*/
+	private String template_returnApply = "SMS_158051414";
+	/** 商品可用量告警*/
+	private String template_goodsWarning="SMS_150866557";
+	/** 短信验证码*/
+	private String template_verificationCode="SMS_154594680";
+	
+	
 	/** 阿里大鱼客户端配置*/
 	private IClientProfile profile = null;
 
@@ -163,7 +157,32 @@ public class AlidayuSmsImpl implements IMessageService {
 		}
 		return false;
 	}
-	
+	@Override
+	public boolean returnApply(List<ReturnApplyParam> params) {
+		if (profile == null) {
+			log.error("初始化addEndpoint出错!");
+			return false;
+		}
+		for (ReturnApplyParam param : params) {
+			try {
+				IAcsClient acsClient = new DefaultAcsClient(profile);
+				
+				JSONObject json = new JSONObject();
+				json.put("order", param.getOrderNo());
+				SendSmsRequest request = buildData(template_returnApply, param.getMobile(), json.toJSONString());
+
+				log.info(messagetype+"推送["+TemplateType.RETURN_APPLY+"]sendSmsRequest>" + JSONObject.toJSONString(request));
+				SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
+				log.info(messagetype+"推送["+TemplateType.RETURN_APPLY+"]sendSmsResponse>" + JSONObject.toJSONString(sendSmsResponse));
+				if (sendSmsResponse != null) {
+					return sendSmsResponse.getCode().equals("OK");
+				}
+			} catch (Exception e) {
+				log.error("用户[" + param.getMobile() + "]推送[" + TemplateType.RETURN_APPLY + "]消息失败！", e);
+			}
+		}
+		return false;
+	}
 	/**
 	 * 构造阿里大鱼指定格式请求对象
 	 */
@@ -175,4 +194,5 @@ public class AlidayuSmsImpl implements IMessageService {
 		request.setTemplateParam(jsonData);
 		return request;
 	}
+	
 }

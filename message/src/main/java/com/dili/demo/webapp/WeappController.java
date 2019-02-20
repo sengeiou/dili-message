@@ -199,7 +199,8 @@ public class WeappController {
 		param.setProductQuantity("52");
 		param.setOpenId(openId);
 		param.setFormOrPayId(formId);
-		messageService.returnApply(param, MessageType.MP,MessageType.WEAPP);
+		param.setMobile("18981883712");
+		messageService.returnApply(param, MessageType.MP,MessageType.WEAPP,MessageType.SMS);
 	}
 	private void verificationCode(String formId) {
 		VerificationCodeParam param=new VerificationCodeParam();

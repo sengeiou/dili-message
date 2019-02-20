@@ -9,7 +9,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
@@ -22,7 +21,6 @@ import com.dili.message.sdk.domain.DeliveryParam;
 import com.dili.message.sdk.domain.OrderPaySuccessParam;
 import com.dili.message.sdk.domain.RefundParam;
 import com.dili.message.sdk.domain.ReturnApplyParam;
-import com.dili.message.sdk.domain.VerificationCodeParam;
 import com.dili.message.sdk.service.IMessageService;
 import com.dili.message.sdk.type.TemplateType;
 
@@ -40,23 +38,19 @@ public class WeappImpl implements IMessageService {
 	Logger log = LoggerFactory.getLogger(WeappImpl.class);
 	private static String messagetype = "小程序";
 
-	@Value("${weapp.appId}")
-	public String appId;
-	@Value("${weapp.appsecret}")
-	public String appsecret;
+	public static final String appId = "wxd1405e5c40ff05db";
+	public static final String appsecret = "2c34b95ab3a5ff4f77763ba7931dcc4d";
 
-	/**
-	 * 支持的模板
-	 */
-	@Value("${weapp.templateid.orderPaySuccess}")
-	public String template_orderPaySuccess;
-	@Value("${weapp.templateid.delivery}")
-	public String template_delivery;
-	@Value("${weapp.templateid.refund}")
-	public String template_refund;
-	@Value("${weapp.templateid.returnApply}")
-	public String template_returnApply;
-	
+	//////支持的模板
+	/** 支付成功  */
+	private static final String template_orderPaySuccess = "NnIfV5AxznoLITNCa-XgJUQvojINXY3Jt0SswVUojjg";
+	/** 取货通知 */
+	private static final String template_delivery = "Ma---ZWwg-5ch18I3WcCCqYm-Cgpa3AP3PIZvGzwsuE";
+	/** 退款通知 */
+	private static final String template_refund = "w7v4dZl2gD1fI_0nEeJNFlU_tg62Q7lsmGWsZouDbbc";
+	/** 退款申请*/
+	private static final String template_returnApply = "iZvXIS3pePWp8-lCvdY6siHrN95YPabvwXDbcYX2otI";
+
 	@Resource
 	private AccessTokenUtil accessTokenUtil;
 
@@ -74,7 +68,7 @@ public class WeappImpl implements IMessageService {
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("weapp_template_msg", weappParam);
-				ret = sendParam(sendParam,TemplateType.DELIVERY);
+				ret = sendParam(sendParam, TemplateType.DELIVERY);
 			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.DELIVERY + "]异常！", e);
@@ -97,14 +91,13 @@ public class WeappImpl implements IMessageService {
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("weapp_template_msg", weappParam);
-				ret = sendParam(sendParam,TemplateType.REFUND);
+				ret = sendParam(sendParam, TemplateType.REFUND);
 			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.REFUND + "]异常！", e);
 		}
 		return ret;
 	}
-
 
 	@Override
 	public boolean orderPaySuccess(List<OrderPaySuccessParam> params) {
@@ -121,7 +114,7 @@ public class WeappImpl implements IMessageService {
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("weapp_template_msg", weappParam);
-				ret = sendParam(sendParam,TemplateType.PAY_SUCCESS);
+				ret = sendParam(sendParam, TemplateType.PAY_SUCCESS);
 			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.PAY_SUCCESS + "]异常！", e);
@@ -144,13 +137,14 @@ public class WeappImpl implements IMessageService {
 				HashMap<String, Object> sendParam = new HashMap<String, Object>();
 				sendParam.put("touser", param.getOpenId());
 				sendParam.put("weapp_template_msg", weappParam);
-				ret = sendParam(sendParam,TemplateType.RETURN_APPLY);
+				ret = sendParam(sendParam, TemplateType.RETURN_APPLY);
 			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.RETURN_APPLY + "]异常！", e);
 		}
 		return ret;
 	}
+
 	/**
 	 * 构造参数 <br>
 	 * <i> 按小程序和公众号统一的服务消息接口参数格式构造
@@ -186,7 +180,7 @@ public class WeappImpl implements IMessageService {
 		// 发送模板消息
 		String sendMessageUrl = UrlConstants.SEND_UNIFORM_MESSAGE + accessTokenUtil.getToken();
 		String jsonData = JSONObject.toJSONString(data, SerializerFeature.DisableCircularReferenceDetect);
-		log.info(messagetype + "推送[" + templateType + "]access_token["+accessTokenUtil.getToken()+"]requestData>" + jsonData);
+		log.info(messagetype + "推送[" + templateType + "]access_token[" + accessTokenUtil.getToken() + "]requestData>" + jsonData);
 		Response sendResponse;
 		try {
 			sendResponse = OkHttpUtils.postString().content(jsonData).url(sendMessageUrl).build().connTimeOut(1000L * 60L * 60L * 3)
