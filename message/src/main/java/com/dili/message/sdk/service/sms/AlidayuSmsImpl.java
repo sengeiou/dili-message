@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+import com.dili.message.sdk.domain.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -16,11 +17,6 @@ import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.aliyuncs.exceptions.ClientException;
 import com.aliyuncs.profile.DefaultProfile;
 import com.aliyuncs.profile.IClientProfile;
-import com.dili.message.sdk.domain.GoodsWarningParam;
-import com.dili.message.sdk.domain.OrderPaySuccessParam;
-import com.dili.message.sdk.domain.RefundParam;
-import com.dili.message.sdk.domain.ReturnApplyParam;
-import com.dili.message.sdk.domain.VerificationCodeParam;
 import com.dili.message.sdk.service.IMessageService;
 import com.dili.message.sdk.type.TemplateType;
 
@@ -50,7 +46,9 @@ public class AlidayuSmsImpl implements IMessageService {
 	private String template_goodsWarning="SMS_150866557";
 	/** 短信验证码*/
 	private String template_verificationCode="SMS_154594680";
-	
+	/** 审核结果通知*/
+	private String template_auditResultNotice="SMS_160270506";
+
 	
 	/** 阿里大鱼客户端配置*/
 	private IClientProfile profile = null;
@@ -183,6 +181,34 @@ public class AlidayuSmsImpl implements IMessageService {
 		}
 		return false;
 	}
+
+	@Override
+	public boolean auditResultNotice(List<AuditResultNoticeParam> params) {
+		if (profile == null) {
+			log.error("初始化addEndpoint出错!");
+			return false;
+		}
+		for (AuditResultNoticeParam param : params) {
+			try {
+				IAcsClient acsClient = new DefaultAcsClient(profile);
+
+				JSONObject json = new JSONObject();
+				json.put("applyCode", param.getApplyNumber());
+				SendSmsRequest request = buildData(template_auditResultNotice, param.getMobile(), json.toJSONString());
+
+				log.info(messagetype+"推送["+TemplateType.AUDIT_RESULT_NOTICE+"]sendSmsRequest>" + JSONObject.toJSONString(request));
+				SendSmsResponse sendSmsResponse = acsClient.getAcsResponse(request);
+				log.info(messagetype+"推送["+TemplateType.AUDIT_RESULT_NOTICE+"]sendSmsResponse>" + JSONObject.toJSONString(sendSmsResponse));
+				if (sendSmsResponse != null) {
+					return sendSmsResponse.getCode().equals("OK");
+				}
+			} catch (Exception e) {
+				log.error("用户[" + param.getMobile() + "]推送[" + TemplateType.AUDIT_RESULT_NOTICE + "]消息失败！", e);
+			}
+		}
+		return false;
+	}
+
 	/**
 	 * 构造阿里大鱼指定格式请求对象
 	 */

@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
+import com.dili.message.sdk.domain.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,12 +19,6 @@ import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dili.message.sdk.common.AccessTokenUtil;
-import com.dili.message.sdk.domain.DeliveryParam;
-import com.dili.message.sdk.domain.GoodsWarningParam;
-import com.dili.message.sdk.domain.OrderPaySuccessParam;
-import com.dili.message.sdk.domain.RefundParam;
-import com.dili.message.sdk.domain.ReturnApplyParam;
-import com.dili.message.sdk.domain.VerificationCodeParam;
 import com.dili.message.sdk.service.mp.MpImpl;
 import com.dili.message.sdk.service.sms.AlidayuSmsImpl;
 import com.dili.message.sdk.service.weapp.WeappImpl;
@@ -157,7 +152,16 @@ public class MessageService {
 		list.add(param);
 		executeWork(JSONObject.toJSONString(list), TemplateType.RETURN_APPLY, type);
 	}
-	
+
+	/**
+	 * 审核结果通知
+	 */
+	public void auditResultNotice(AuditResultNoticeParam param, MessageType... type) {
+		List<AuditResultNoticeParam> list = new ArrayList<>();
+		list.add(param);
+		executeWork(JSONObject.toJSONString(list), TemplateType.AUDIT_RESULT_NOTICE, type);
+	}
+
 	/**
 	 * 异步推送消息
 	 * 

@@ -2,12 +2,7 @@ package com.dili.message.sdk.service;
 
 import java.util.List;
 
-import com.dili.message.sdk.domain.DeliveryParam;
-import com.dili.message.sdk.domain.GoodsWarningParam;
-import com.dili.message.sdk.domain.OrderPaySuccessParam;
-import com.dili.message.sdk.domain.RefundParam;
-import com.dili.message.sdk.domain.ReturnApplyParam;
-import com.dili.message.sdk.domain.VerificationCodeParam;
+import com.dili.message.sdk.domain.*;
 
 /**
  * @description： 消息类型接口
@@ -67,6 +62,14 @@ public interface IMessageService {
 	 * @return 单条数据可以使用，多条数据意义不大
 	 */
 	default public boolean returnApply(List<ReturnApplyParam> params) {
+		return false;
+	}
+	/**
+	 * 审核结果通知
+	 *
+	 * @return 单条数据可以使用，多条数据意义不大
+	 */
+	default public boolean auditResultNotice(List<AuditResultNoticeParam> params) {
 		return false;
 	}
 }

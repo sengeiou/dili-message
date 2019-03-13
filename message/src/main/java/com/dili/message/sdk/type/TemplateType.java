@@ -35,7 +35,10 @@ public enum TemplateType {
 	VERIFICATION_CODE(9, "短信验证码"),
 	
 	/** 退货申请 */
-	RETURN_APPLY(10, "退货申请");
+	RETURN_APPLY(10, "退货申请"),
+
+	/** 退货申请 */
+	AUDIT_RESULT_NOTICE(11, "审核结果通知");
 
 	private String name;
 	private int code;

@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
+import com.dili.message.sdk.domain.*;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +18,6 @@ import com.dili.http.okhttp.OkHttpUtils;
 import com.dili.message.sdk.common.AccessTokenUtil;
 import com.dili.message.sdk.common.TemplateParam;
 import com.dili.message.sdk.constants.UrlConstants;
-import com.dili.message.sdk.domain.DeliveryParam;
-import com.dili.message.sdk.domain.OrderPaySuccessParam;
-import com.dili.message.sdk.domain.RefundParam;
-import com.dili.message.sdk.domain.ReturnApplyParam;
 import com.dili.message.sdk.service.IMessageService;
 import com.dili.message.sdk.type.TemplateType;
 
@@ -50,6 +47,8 @@ public class WeappImpl implements IMessageService {
 	private static final String template_refund = "w7v4dZl2gD1fI_0nEeJNFlU_tg62Q7lsmGWsZouDbbc";
 	/** 退款申请*/
 	private static final String template_returnApply = "iZvXIS3pePWp8-lCvdY6siHrN95YPabvwXDbcYX2otI";
+	/** 审核结果通知*/
+	private static final String template_auditResultNotice = "2tigCO3h9xQNnrfW2ShbxmOlKn_R-nUg2ZOEk19UoPw";
 
 	@Resource
 	private AccessTokenUtil accessTokenUtil;
@@ -141,6 +140,29 @@ public class WeappImpl implements IMessageService {
 			}
 		} catch (Exception e) {
 			log.error(messagetype + "推送[" + TemplateType.RETURN_APPLY + "]异常！", e);
+		}
+		return ret;
+	}
+
+	@Override
+	public boolean auditResultNotice(List<AuditResultNoticeParam> params) {
+		boolean ret = false;
+		try {
+			for (AuditResultNoticeParam param : params) {
+				Map<String, TemplateParam> dataMap = new HashMap<String, TemplateParam>();
+				dataMap.put("keyword1", new TemplateParam(param.getAuditResult()));
+				dataMap.put("keyword2", new TemplateParam(param.getAuditTime()));
+				dataMap.put("keyword3", new TemplateParam(param.getApplyNumber()));
+				dataMap.put("keyword4", new TemplateParam(param.getApplyTime()));
+				HashMap<String, Object> weappParam = buildParam(template_auditResultNotice, param.getPage(), param.getFormOrPayId(), dataMap);
+
+				HashMap<String, Object> sendParam = new HashMap<String, Object>();
+				sendParam.put("touser", param.getOpenId());
+				sendParam.put("weapp_template_msg", weappParam);
+				ret = sendParam(sendParam, TemplateType.AUDIT_RESULT_NOTICE);
+			}
+		} catch (Exception e) {
+			log.error(messagetype + "推送[" + TemplateType.AUDIT_RESULT_NOTICE + "]异常！", e);
 		}
 		return ret;
 	}
